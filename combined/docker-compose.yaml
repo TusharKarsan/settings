@@ -58,19 +58,21 @@ services:
     ports:
       - "8188:8188"
     environment:
-      # - BASE_DIR=${BASE_DIR}/comfyui
       - COMFYUI_PORT_HOST=8188
       - WEB_ENABLE_AUTH=false
     volumes:
-      # Map your host folder to the path the logs say it's actually using
-      # - ${BASE_DIR}/comfyui:/workspace/ComfyUI
-      # Ensure models specifically are linked if the image has weird defaults
-      # - ${BASE_DIR}/comfyui/models:/opt/ComfyUI/models
-      # - ${BASE_DIR}/comfyui/custom_nodes:/opt/ComfyUI/custom_nodes
-      # This ensures the container looks exactly where the logs say it is
-      # - /home/tushar/data/comfyui:/opt/ComfyUI
-      # - ${BASE_DIR}/comfyui:/opt/ComfyUI
-      - ${BASE_DIR}/comfyui:/opt/ComfyUI
+volumes:
+      # Map models so your Flux/Juggernaut files persist
+      - ${BASE_DIR}/comfyui/models:/opt/ComfyUI/models
+      
+      # Map custom_nodes so your GGUF node survives a restart
+      - ${BASE_DIR}/comfyui/custom_nodes:/opt/ComfyUI/custom_nodes
+      
+      # Optional: Map output so your generated images are on your host
+      - ${BASE_DIR}/comfyui/output:/opt/ComfyUI/output
+
+      # Optional: Map workflow so your saved workflows persist
+      - /home/tushar/data/comfyui/workflow:/opt/ComfyUI/workflow
     deploy:
       resources:
         reservations:
