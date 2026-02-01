@@ -5,12 +5,9 @@ services:
     container_name: comfyui
     ports:
       - "8188:8188"
-      - "1111:1111"  # Optional: To see the AI-Dock portal
     environment:
       - COMFYUI_PORT_HOST=8188
-      - WEB_ENABLE_AUTH=false  # Disables the password prompt
-      - CF_QUICK_TUNNELS=false # Stops those London/Manchester tunnels
-      - DIRECT_ADDRESS=127.0.0.1
+      - WEB_ENABLE_AUTH=false   # Disables the password prompt
     volumes:
       - ./comfyui/models:/workspace/ComfyUI/models
       - ./comfyui/output:/workspace/ComfyUI/output
@@ -34,12 +31,36 @@ services:
     environment:
       - COMFYUI_BASE_URL=http://comfyui:8188
       - WEBUI_AUTH=false
+      - ENABLE_RAG_WEB_SEARCH=True
+      - RAG_WEB_SEARCH_ENGINE=searxng
+      - SEARXNG_QUERY_URL=http://searxng:8080/search?q=<query>
+    depends_on:
+      - searxng
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
-              count: all
+              count: 1 # all
               capabilities: [gpu]
     restart: always
 
+  searxng:
+    container_name: searxng
+    image: searxng/searxng:latest
+    ports:
+      - "8081:8080" # Exposed on 8081 to avoid conflict with OpenWebUI's internal 8080
+    volumes:
+      - ./searxng:/etc/searxng # This is where your settings.yml will live
+    environment:
+      - SEARXNG_BASE_URL=http://localhost:8081/
+      - SEARXNG_REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+    restart: always
+
+  redis:
+    container_name: redis
+    image: redis:7-alpine
+    command: redis-server --save 60 1 --loglevel warning
+    restart: always
