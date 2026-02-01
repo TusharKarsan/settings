@@ -62,12 +62,11 @@ services:
       - COMFYUI_PORT_HOST=8188
       - WEB_ENABLE_AUTH=false
     volumes:
-      # Map the entire data directory to the app's root data folder
-      - ${BASE_DIR}/comfyui:/app/ComfyUI
-      # Or map specific subfolders for better control:
-      # - ${BASE_DIR}/comfyui/models:/app/ComfyUI/models
-      # - ${BASE_DIR}/comfyui/custom_nodes:/app/ComfyUI/custom_nodes
-      # - ${BASE_DIR}/comfyui/output:/app/ComfyUI/output
+      # Map your host folder to the path the logs say it's actually using
+      - ${BASE_DIR}/comfyui:/opt/ComfyUI
+      # Ensure models specifically are linked if the image has weird defaults
+      - ${BASE_DIR}/comfyui/models:/opt/ComfyUI/models
+      - ${BASE_DIR}/comfyui/custom_nodes:/opt/ComfyUI/custom_nodes
     deploy:
       resources:
         reservations:
