@@ -61,18 +61,11 @@ services:
       - COMFYUI_PORT_HOST=8188
       - WEB_ENABLE_AUTH=false
     volumes:
-volumes:
-      # Map models so your Flux/Juggernaut files persist
-      - ${BASE_DIR}/comfyui/models:/opt/ComfyUI/models
-      
-      # Map custom_nodes so your GGUF node survives a restart
-      - ${BASE_DIR}/comfyui/custom_nodes:/opt/ComfyUI/custom_nodes
-      
-      # Optional: Map output so your generated images are on your host
-      - ${BASE_DIR}/comfyui/output:/opt/ComfyUI/output
-
-      # Optional: Map workflow so your saved workflows persist
-      - /home/tushar/data/comfyui/workflow:/opt/ComfyUI/workflow
+      - ${BASE_DIR}/comfyui/models:/workspace/ComfyUI/models
+      - ${BASE_DIR}/comfyui/output:/workspace/ComfyUI/output
+      - ${BASE_DIR}/comfyui/input:/workspace/ComfyUI/input      
+      - ${BASE_DIR}/comfyui/workflow:/workspace/ComfyUI/workflow
+      # - ${BASE_DIR}/comfyui/custom_nodes:/opt/ComfyUI/custom_nodes
     deploy:
       resources:
         reservations:
