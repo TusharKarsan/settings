@@ -1,0 +1,45 @@
+services:
+
+  comfyui:
+    image: ghcr.io/ai-dock/comfyui:latest-cuda
+    container_name: comfyui
+    ports:
+      - "8188:8188"
+      - "1111:1111"  # Optional: To see the AI-Dock portal
+    environment:
+      - COMFYUI_PORT_HOST=8188
+      - WEB_ENABLE_AUTH=false  # Disables the password prompt
+      - CF_QUICK_TUNNELS=false # Stops those London/Manchester tunnels
+      - DIRECT_ADDRESS=127.0.0.1
+    volumes:
+      - ./comfyui/models:/workspace/ComfyUI/models
+      - ./comfyui/output:/workspace/ComfyUI/output
+      - ./comfyui/input:/workspace/ComfyUI/input
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1 # all
+              capabilities: [gpu]
+    restart: always
+
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:cuda
+    container_name: openwebui
+    ports:
+      - "3000:8080"
+    volumes:
+      - ./openwebui/data:/app/backend/data
+    environment:
+      - COMFYUI_BASE_URL=http://comfyui:8188
+      - WEBUI_AUTH=false
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: always
+

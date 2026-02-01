@@ -1,0 +1,36 @@
+services:
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    ports:
+      - "6333:6333"   # HTTP
+      - "6334:6334"   # gRPC
+    volumes:
+      - ./qdrant_storage:/qdrant/storage
+    restart: unless-stopped
+
+  anythingllm:
+    image: mintplexlabs/anythingllm:latest
+    container_name: anythingllm
+    ports:
+      - "3001:3001"   # UI / API
+    environment:
+      # Point AnythingLLM to Qdrant
+      - VECTOR_DB_TYPE=qdrant
+      - VECTOR_DB_HOST=qdrant
+      - VECTOR_DB_PORT=6333
+      - VECTOR_DB_API_KEY=qdrant
+      # Point AnythingLLM to Ollama on Windows host
+      - EXTERNAL_LLM_ENDPOINT=http://host.docker.internal:11434
+      - EXTERNAL_LLM_MODEL=qwen3-coder:latest
+      # Storage location
+      - STORAGE_DIR=/app/server/storage
+    volumes:
+      - ${STORAGE_LOCATION}:/app/server/storage
+      - ${STORAGE_LOCATION}/.env:/app/server/.env
+      - ${STORAGE_LOCATION}/hotdir:/app/collector/hotdir
+    depends_on:
+      - qdrant
+    restart: unless-stopped
+
