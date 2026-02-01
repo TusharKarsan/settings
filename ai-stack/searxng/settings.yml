@@ -9,6 +9,8 @@ server:
   image_proxy: true
 
 search:
+  safe_search: 0
+  default_lang: "en-GB" # Prioritises British sources
   formats:
     - html
     - json # REQUIRED for OpenWebUI to work
