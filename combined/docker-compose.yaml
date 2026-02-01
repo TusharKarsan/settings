@@ -68,7 +68,8 @@ services:
       - ${BASE_DIR}/comfyui/models:/opt/ComfyUI/models
       - ${BASE_DIR}/comfyui/custom_nodes:/opt/ComfyUI/custom_nodes
       # This ensures the container looks exactly where the logs say it is
-      - ${BASE_DIR}/comfyui:/opt/ComfyUI
+      - /home/tushar/data/comfyui:/opt/ComfyUI
+      # - ${BASE_DIR}/comfyui:/opt/ComfyUI
     deploy:
       resources:
         reservations:
