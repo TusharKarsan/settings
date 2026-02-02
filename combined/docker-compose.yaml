@@ -60,12 +60,12 @@ services:
     environment:
       - COMFYUI_PORT_HOST=8188
       - WEB_ENABLE_AUTH=false
+      - AIDOCK_ENABLE_COMFYUI_MANAGER=true
     volumes:
-      - ${BASE_DIR}/comfyui/models:/workspace/ComfyUI/models
-      - ${BASE_DIR}/comfyui/output:/workspace/ComfyUI/output
-      - ${BASE_DIR}/comfyui/input:/workspace/ComfyUI/input      
-      - ${BASE_DIR}/comfyui/workflow:/workspace/ComfyUI/workflow
-      - ${BASE_DIR}/comfyui/custom_nodes:/workspace/ComfyUI/custom_nodes
+      - ${BASE_DIR}/comfyui/custom_nodes:/opt/ComfyUI/custom_nodes
+      - ${BASE_DIR}/comfyui/input:/opt/ComfyUI/input
+      - ${BASE_DIR}/comfyui/models:/opt/ComfyUI/models
+      - ${BASE_DIR}/comfyui/output:/opt/ComfyUI/output
     deploy:
       resources:
         reservations:
