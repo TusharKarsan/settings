@@ -33,6 +33,20 @@ mkdir -p "$BASE_DIR/models/vae_approx"
 mkdir -p "$BASE_DIR/models/controlnet"
 mkdir -p "$BASE_DIR/models/diffusers"
 
+echo "Cloning custom nodes into: $BASE_DIR/custom_nodes"
+cd "$BASE_DIR/custom_nodes"
+if [ -d "$BASE_DIR/custom_nodes/ComfyUI-GGUF" ]; then \
+    cd "$BASE_DIR/custom_nodes/ComfyUI-GGUF" && git pull; \
+else \
+    git clone https://github.com/city96/ComfyUI-GGUF "$BASE_DIR/custom_nodes/ComfyUI-GGUF"; \
+fi && \
+if [ -d "$BASE_DIR/custom_nodes/was-node-suite-comfyui" ]; then \
+    cd "$BASE_DIR/custom_nodes/was-node-suite-comfyui" && git pull; \
+else \
+    git clone https://github.com/WASasquatch/was-node-suite-comfyui "$BASE_DIR/custom_nodes/was-node-suite-comfyui"; \
+fi && \
+cd "$BASE_DIR"
+
 echo "Setting permissions for container user (UID 1000)..."
 sudo chown -R 1000:1000 "$BASE_DIR"
 
