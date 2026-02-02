@@ -1,5 +1,6 @@
 FROM nvidia/cuda:12.2.0-runtime-ubuntu22.04
 
+# System dependencies
 RUN apt-get update && apt-get install -y \
     git python3 python3-pip && \
     rm -rf /var/lib/apt/lists/*
@@ -14,6 +15,26 @@ WORKDIR /comfyui
 
 # Install ComfyUI dependencies
 RUN pip3 install -r requirements.txt
+
+# ---------------------------------------------------------
+# Install custom nodes: ComfyUI-GGUF + WAS Node Suite
+# ---------------------------------------------------------
+
+# Clone custom nodes into the image
+RUN git clone https://github.com/city96/ComfyUI-GGUF /comfyui/custom_nodes/ComfyUI-GGUF && \
+    git clone https://github.com/WASasquatch/was-node-suite-comfyui /comfyui/custom_nodes/was-node-suite-comfyui
+
+# Install Python dependencies for both custom nodes
+# (requirements.txt may not exist in both repos, so we install safely)
+RUN if [ -f /comfyui/custom_nodes/ComfyUI-GGUF/requirements.txt ]; then \
+        pip3 install -r /comfyui/custom_nodes/ComfyUI-GGUF/requirements.txt ; \
+    fi && \
+    if [ -f /comfyui/custom_nodes/was-node-suite-comfyui/requirements.txt ]; then \
+        pip3 install -r /comfyui/custom_nodes/was-node-suite-comfyui/requirements.txt ; \
+    fi
+
+# Explicit installs required by both repos
+RUN pip3 install numpy gguf numba
 
 EXPOSE 8188
 
