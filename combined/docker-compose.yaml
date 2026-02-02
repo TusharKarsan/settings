@@ -65,7 +65,7 @@ services:
       - ${BASE_DIR}/comfyui/output:/workspace/ComfyUI/output
       - ${BASE_DIR}/comfyui/input:/workspace/ComfyUI/input      
       - ${BASE_DIR}/comfyui/workflow:/workspace/ComfyUI/workflow
-      # - ${BASE_DIR}/comfyui/custom_nodes:/opt/ComfyUI/custom_nodes
+      - ${BASE_DIR}/comfyui/custom_nodes:/workspace/ComfyUI/custom_nodes
     deploy:
       resources:
         reservations:
