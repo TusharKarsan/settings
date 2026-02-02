@@ -53,7 +53,7 @@ services:
 
   # --- Image Generation ---
   comfyui:
-    image: ghcr.io/ai-dock/comfyui:latest-cuda
+    image: comfyui-vanilla
     container_name: comfyui
     ports:
       - "8188:8188"
@@ -61,11 +61,8 @@ services:
       - COMFYUI_PORT_HOST=8188
       - WEB_ENABLE_AUTH=false
       - AIDOCK_ENABLE_COMFYUI_MANAGER=true
-    volumes:
-      - ${BASE_DIR}/comfyui/custom_nodes:/opt/ComfyUI/custom_nodes
-      - ${BASE_DIR}/comfyui/input:/opt/ComfyUI/input
-      - ${BASE_DIR}/comfyui/models:/opt/ComfyUI/models
-      - ${BASE_DIR}/comfyui/output:/opt/ComfyUI/output
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
     deploy:
       resources:
         reservations:
@@ -73,6 +70,11 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
+    volumes:
+      - ${BASE_DIR}/comfyui/custom_nodes:/comfyui/custom_nodes
+      - ${BASE_DIR}/comfyui/input:/comfyui/input
+      - ${BASE_DIR}/comfyui/models:/comfyui/models
+      - ${BASE_DIR}/comfyui/output:/comfyui/output
     restart: always
 
   # --- Search & Metadata ---
