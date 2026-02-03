@@ -22,6 +22,7 @@ RUN pip3 install -r requirements.txt
 
 # Clone custom nodes into the image
 RUN git clone https://github.com/city96/ComfyUI-GGUF /comfyui/custom_nodes/ComfyUI-GGUF && \
+    # git clone https://github.com/black-forest-labs/ComfyUI-Flux /comfyui/custom_nodes/ComfyUI-Flux && \
     git clone https://github.com/WASasquatch/was-node-suite-comfyui /comfyui/custom_nodes/was-node-suite-comfyui
 
 # Install Python dependencies for both custom nodes
@@ -29,6 +30,9 @@ RUN git clone https://github.com/city96/ComfyUI-GGUF /comfyui/custom_nodes/Comfy
 RUN if [ -f /comfyui/custom_nodes/ComfyUI-GGUF/requirements.txt ]; then \
         pip3 install -r /comfyui/custom_nodes/ComfyUI-GGUF/requirements.txt ; \
     fi && \
+    # if [ -f /comfyui/custom_nodes/ComfyUI-Flux/requirements.txt ]; then \
+    #     pip3 install -r /comfyui/custom_nodes/ComfyUI-Flux/requirements.txt ; \
+    # fi && \
     if [ -f /comfyui/custom_nodes/was-node-suite-comfyui/requirements.txt ]; then \
         pip3 install -r /comfyui/custom_nodes/was-node-suite-comfyui/requirements.txt ; \
     fi

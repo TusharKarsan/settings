@@ -39,12 +39,20 @@ if [ -d "$BASE_DIR/custom_nodes/ComfyUI-GGUF" ]; then \
     cd "$BASE_DIR/custom_nodes/ComfyUI-GGUF" && git pull; \
 else \
     git clone https://github.com/city96/ComfyUI-GGUF "$BASE_DIR/custom_nodes/ComfyUI-GGUF"; \
-fi && \
+fi
+
+# if [ -d "$BASE_DIR/custom_nodes/ComfyUI-Flux" ]; then \
+#     cd "$BASE_DIR/custom_nodes/ComfyUI-Flux" && git pull; \
+# else \
+#     https://github.com/black-forest-labs/ComfyUI-Flux "$BASE_DIR/custom_nodes/ComfyUI-Flux"; \
+# fi
+
 if [ -d "$BASE_DIR/custom_nodes/was-node-suite-comfyui" ]; then \
     cd "$BASE_DIR/custom_nodes/was-node-suite-comfyui" && git pull; \
 else \
     git clone https://github.com/WASasquatch/was-node-suite-comfyui "$BASE_DIR/custom_nodes/was-node-suite-comfyui"; \
-fi && \
+fi
+
 cd "$BASE_DIR"
 
 echo "Setting permissions for container user (UID 1000)..."
