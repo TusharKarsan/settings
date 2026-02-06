@@ -54,10 +54,18 @@ New-NetFirewallRule `
   -Action Allow `
   -Profile Any
 
-  New-NetFirewallRule `
-    -DisplayName "Tailscale Traffic (Android Fix)" `
-    -Direction Inbound `
-    -Protocol TCP `
-    -RemoteAddress 100.64.0.0/10 `
-    -Action Allow `
-    -Profile Any
+# ------
+# Tailscale
+# ------
+
+New-NetFirewallRule `
+  -DisplayName "Tailscale Traffic (Android Fix)" `
+  -Direction Inbound `
+  -Protocol TCP `
+  -RemoteAddress 100.64.0.0/10 `
+  -Action Allow `
+  -Profile Any
+
+Set-NetIPInterface `
+  -InterfaceAlias "vEthernet (WSL (Hyper-V firewall))" `
+  -Forwarding Enabled
