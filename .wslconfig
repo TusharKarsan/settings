@@ -1,0 +1,7 @@
+[wsl2]
+memory=8GB
+swapFile=D:\\tmp\\swap.vhdx
+swap=16GB
+localhostForwarding=true
+kernelCommandLine=ipv6.disable=1
+networkingMode=mirrored
