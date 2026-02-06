@@ -1,0 +1,16 @@
+FROM python:3.11-slim
+
+# Install uv (used to run mcp-server-qdrant from PyPI)
+RUN pip install --no-cache-dir uv
+
+# Qdrant MCP server listens on FASTMCP_PORT (default 8000)
+ENV FASTMCP_HOST=0.0.0.0 \
+    FASTMCP_PORT=8000
+
+# You’ll pass QDRANT_URL / QDRANT_API_KEY / COLLECTION_NAME at runtime
+# e.g. via `docker run -e QDRANT_URL=... -e COLLECTION_NAME=...`
+
+EXPOSE 8000
+
+# Run the official Qdrant MCP server via uvx
+CMD ["uvx", "mcp-server-qdrant", "--transport", "sse"]

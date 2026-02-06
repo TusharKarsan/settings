@@ -1,6 +1,9 @@
 services:
 
+  # ---
   # --- AI Interfaces & Orchestration ---
+  # ---
+
   openwebui:
     image: ghcr.io/open-webui/open-webui:cuda
     container_name: openwebui
@@ -46,16 +49,19 @@ services:
     volumes:
       - ${BASE_DIR}:/anythingLLM/app/server/storage
       - ${BASE_DIR}/anythingLLM/hotdir:/app/collector/hotdir
-      - ./anythingLLM/.env:/app/server/.env # Is subfolder under docker-compose.yaml location
+      - ./anythingLLM/.env:/app/server/.env
     depends_on:
       - qdrant
     restart: unless-stopped
 
+  # ---
   # --- Image Generation ---
+  # ---
+
   comfyui:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.comfyui
     container_name: comfyui
     ports:
       - "8188:8188"
@@ -77,14 +83,17 @@ services:
       - ${BASE_DIR}/comfyui/output:/comfyui/output
     restart: always
 
+  # ---
   # --- Search & Metadata ---
+  # ---
+
   searxng:
     image: searxng/searxng:latest
     container_name: searxng
     ports:
-      - "8081:8080" # Exposed on 8081 to avoid conflict with OpenWebUI's internal 8080
+      - "8081:8080"
     volumes:
-      - ./searxng:/etc/searxng # Is subfolder under docker-compose.yaml location
+      - ./searxng:/etc/searxng
     environment:
       - SEARXNG_BASE_URL=http://localhost:8081/
       - SEARXNG_REDIS_URL=redis://redis:6379/0
@@ -92,7 +101,10 @@ services:
       - redis
     restart: always
 
+  # ---
   # --- Databases ---
+  # ---
+
   qdrant:
     image: qdrant/qdrant:latest
     container_name: qdrant
@@ -101,6 +113,21 @@ services:
       - "6334:6334"
     volumes:
       - ${BASE_DIR}/qdrant/storage:/qdrant/storage
+    restart: unless-stopped
+
+  mcp-bridge:
+    build:
+      context: .
+      dockerfile: Dockerfile.qdrant-mcp
+    container_name: mcp-bridge
+    environment:
+      - QDRANT_URL=http://qdrant:6333
+      - FASTMCP_HOST=0.0.0.0
+      - FASTMCP_PORT=8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      - qdrant
     restart: unless-stopped
 
   redis:
