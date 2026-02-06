@@ -1,1 +1,11 @@
-# Nothing to do here.
+# Git Ignore.
+
+# ---
+# Continue.dev profile .continue
+# ---
+
+.continue/.migrations/
+.continue/.utils/
+.continue/dev_data/
+.continue/index/
+.continue/types/
