@@ -13,4 +13,7 @@ ENV FASTMCP_HOST=0.0.0.0 \
 EXPOSE 8000
 
 # Run the official Qdrant MCP server via uvx
-CMD ["uvx", "mcp-server-qdrant", "--transport", "sse"]
+# CMD ["uvx", "mcp-server-qdrant", "--transport", "sse"]
+
+# Ensure it listens on all interfaces
+CMD ["uvx", "mcp-server-qdrant", "--host", "0.0.0.0", "--port", "8000"]
