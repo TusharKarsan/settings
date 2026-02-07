@@ -4,12 +4,16 @@ FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install system dependencies
+# libsm6, libxext6, and libxrender-dev are essential for OpenCV/Impact Pack
 RUN apt-get update && apt-get install -y \
     git \
     python3 \
     python3-pip \
     libgl1-mesa-glx \
     libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
@@ -18,29 +22,35 @@ WORKDIR /app
 # Clone ComfyUI
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git .
 
-# Install Python requirements
+# Install core Python requirements
 RUN pip3 install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-# --- CUSTOM NODES FOR YOUR GOALS ---
+# --- PRE-INSTALL NODE DEPENDENCIES ---
+# This fixes the 'skimage' and 'cv2' errors before the nodes load
+RUN pip3 install --no-cache-dir \
+    gguf \
+    scikit-image \
+    opencv-python \
+    segment-anything-fast \
+    ultralytics
 
+# --- CUSTOM NODES ---
 WORKDIR /app/custom_nodes
 
-# 1. GGUF Support (For loading efficient Flux models)
-RUN git clone https://github.com/city96/ComfyUI-GGUF && \
-    pip install gguf
+# 1. GGUF Support (Required for Flux models)
+RUN git clone https://github.com/city96/ComfyUI-GGUF
 
-# 2. Meme Text Support (Allows you to write "Happy Birthday Tom")
+# 2. Meme Text Support (For writing "Happy Birthday Tom")
 RUN git clone https://github.com/pythongosssss/ComfyUI-Custom-Scripts
 
-# 3. Photo Touch-up & Face Fixing (Essential for "nice looking" photos)
-RUN git clone https://github.com/ltdrdata/ComfyUI-Impact-Pack && \
-    pip install segment-anything-fast
+# 3. Photo Touch-up & Face Fixing (Impact Pack)
+RUN git clone https://github.com/ltdrdata/ComfyUI-Impact-Pack
 
 # 4. Efficiency Nodes (Simplifies workflows for paintings/drawings)
 RUN git clone https://github.com/jags111/efficiency-nodes-comfyui
 
-# 5. Manager (To help you update these easily later)
+# 5. Manager (To help you update or install more nodes easily)
 RUN git clone https://github.com/ltdrdata/ComfyUI-Manager
 
 WORKDIR /app
