@@ -30,9 +30,10 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 # This fixes the 'skimage' and 'cv2' errors before the nodes load
 RUN pip3 install --no-cache-dir \
     gguf \
-    scikit-image \
     opencv-python \
+    scikit-image \
     segment-anything-fast \
+    simpleeval \
     ultralytics
 
 # --- CUSTOM NODES ---
