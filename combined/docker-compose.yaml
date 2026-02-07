@@ -69,6 +69,7 @@ services:
       - WEB_ENABLE_AUTH=false
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - YOLO_CONFIG_DIR=/app/user/default/ultralytics
     deploy:
       resources:
         reservations:
