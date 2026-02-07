@@ -1,45 +1,52 @@
-FROM nvidia/cuda:12.2.0-runtime-ubuntu22.04
+FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
 
-# System dependencies
+# Prevent interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    git python3 python3-pip && \
-    rm -rf /var/lib/apt/lists/*
+    git \
+    python3 \
+    python3-pip \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install CUDA-enabled PyTorch (CUDA 12.1 wheels)
-RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+# Set working directory
+WORKDIR /app
 
 # Clone ComfyUI
-RUN git clone https://github.com/comfyanonymous/ComfyUI.git /comfyui
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git .
 
-WORKDIR /comfyui
+# Install Python requirements
+RUN pip3 install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-# Install ComfyUI dependencies
-RUN pip3 install -r requirements.txt
+# --- CUSTOM NODES FOR YOUR GOALS ---
 
-# ---------------------------------------------------------
-# Install custom nodes: ComfyUI-GGUF + WAS Node Suite
-# ---------------------------------------------------------
+WORKDIR /app/custom_nodes
 
-# Clone custom nodes into the image
-RUN git clone https://github.com/city96/ComfyUI-GGUF /comfyui/custom_nodes/ComfyUI-GGUF && \
-    # git clone https://github.com/black-forest-labs/ComfyUI-Flux /comfyui/custom_nodes/ComfyUI-Flux && \
-    git clone https://github.com/WASasquatch/was-node-suite-comfyui /comfyui/custom_nodes/was-node-suite-comfyui
+# 1. GGUF Support (For loading efficient Flux models)
+RUN git clone https://github.com/city96/ComfyUI-GGUF && \
+    pip install gguf
 
-# Install Python dependencies for both custom nodes
-# (requirements.txt may not exist in both repos, so we install safely)
-RUN if [ -f /comfyui/custom_nodes/ComfyUI-GGUF/requirements.txt ]; then \
-        pip3 install -r /comfyui/custom_nodes/ComfyUI-GGUF/requirements.txt ; \
-    fi && \
-    # if [ -f /comfyui/custom_nodes/ComfyUI-Flux/requirements.txt ]; then \
-    #     pip3 install -r /comfyui/custom_nodes/ComfyUI-Flux/requirements.txt ; \
-    # fi && \
-    if [ -f /comfyui/custom_nodes/was-node-suite-comfyui/requirements.txt ]; then \
-        pip3 install -r /comfyui/custom_nodes/was-node-suite-comfyui/requirements.txt ; \
-    fi
+# 2. Meme Text Support (Allows you to write "Happy Birthday Tom")
+RUN git clone https://github.com/pythongosssss/ComfyUI-Custom-Scripts
 
-# Explicit installs required by both repos
-RUN pip3 install numpy gguf numba
+# 3. Photo Touch-up & Face Fixing (Essential for "nice looking" photos)
+RUN git clone https://github.com/ltdrdata/ComfyUI-Impact-Pack && \
+    pip install segment-anything-fast
 
+# 4. Efficiency Nodes (Simplifies workflows for paintings/drawings)
+RUN git clone https://github.com/jags111/efficiency-nodes-comfyui
+
+# 5. Manager (To help you update these easily later)
+RUN git clone https://github.com/ltdrdata/ComfyUI-Manager
+
+WORKDIR /app
+
+# Expose port
 EXPOSE 8188
 
-CMD ["python3", "main.py", "--listen", "0.0.0.0", "--port", "8188"]
+# Launch ComfyUI
+CMD ["python3", "main.py", "--listen", "0.0.0.0"]
