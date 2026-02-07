@@ -78,9 +78,10 @@ services:
               count: all
               capabilities: [gpu]
     volumes:
-      - ${BASE_DIR}/comfyui/models:/comfyui/models
-      - ${BASE_DIR}/comfyui/input:/comfyui/input
-      - ${BASE_DIR}/comfyui/output:/comfyui/output
+    - ${BASE_DIR}/comfyui/models:/home/comfy/ComfyUI/models
+    - ${BASE_DIR}/comfyui/input:/home/comfy/ComfyUI/input
+    - ${BASE_DIR}/comfyui/output:/home/comfy/ComfyUI/output
+    - ${BASE_DIR}/comfyui/custom_nodes:/home/comfy/ComfyUI/custom_nodes
     restart: always
 
   # ---
