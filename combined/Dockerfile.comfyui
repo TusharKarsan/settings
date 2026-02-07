@@ -46,23 +46,23 @@ WORKDIR /app/custom_nodes
 # 4. Efficiency Nodes (Simplifies workflows for paintings/drawings)
 # 5. Manager (To help you update or install more nodes easily)
 
-# Clone the repositories
+# 1. Clone repositories (Added Impact Subpack)
 RUN git clone https://github.com/city96/ComfyUI-GGUF && \
     git clone https://github.com/pythongosssss/ComfyUI-Custom-Scripts && \
     git clone https://github.com/ltdrdata/ComfyUI-Impact-Pack && \
+    git clone https://github.com/ltdrdata/ComfyUI-Impact-Subpack && \
     git clone https://github.com/jags111/efficiency-nodes-comfyui && \
     git clone https://github.com/ltdrdata/ComfyUI-Manager
 
-# --- NEW: Install dependencies for ALL cloned nodes ---
-# This loop finds every requirements.txt in the custom_nodes subfolders and installs them
+# 2. Automatically install dependencies for ALL cloned nodes
+# This loop enters each folder and installs its specific requirements.txt
 RUN for dir in /app/custom_nodes/*/; do \
         if [ -f "$dir/requirements.txt" ]; then \
             pip install --no-cache-dir -r "$dir/requirements.txt"; \
         fi; \
     done
 
-    # 3. EXPLICIT FIXES for your specific needs
-# These ensure the GGUF loader and Ultralytics (Impact Pack) are ready
+# 3. Explicitly install the Ultralytics engine and other essential libs
 RUN pip3 install --no-cache-dir ultralytics gguf scikit-image
 
 WORKDIR /app

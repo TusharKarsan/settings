@@ -9,3 +9,9 @@
 .continue/dev_data/
 .continue/index/
 .continue/types/
+
+# ---
+# Searxng
+# ---
+
+combined/searxng/settings.yml.new
