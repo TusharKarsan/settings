@@ -1,0 +1,18 @@
+{
+  "last_node_id": 11,
+  "last_link_id": 10,
+  "nodes": [
+    {"id": 1, "type": "UnetLoaderGGUF", "pos": [10, 10], "widgets_values": ["flux1-dev-Q4_0.gguf"]},
+    {"id": 2, "type": "DualCLIPLoader", "pos": [10, 150], "widgets_values": ["t5xxl_fp8_e4m3fn.safetensors", "clip_l.safetensors", "flux"]},
+    {"id": 3, "type": "VAELoader", "pos": [10, 310], "widgets_values": ["flux_vae.safetensors"]},
+    {"id": 4, "type": "CLIPTextEncode", "pos": [400, 10], "widgets_values": ["A DevOps architecture diagram for a cloud-native app, clean lines, text labels 'Frontend', 'API', 'Database', professional flat design."]},
+    {"id": 5, "type": "EmptyLatentImage", "pos": [400, 200], "widgets_values": [1024, 1024, 1]},
+    {"id": 6, "type": "KSamplerSelect", "pos": [400, 400], "widgets_values": ["euler"]},
+    {"id": 7, "type": "BasicScheduler", "pos": [700, 400], "widgets_values": ["simple", 20, 1.0]},
+    {"id": 8, "type": "SamplerCustomAdvanced", "pos": [1000, 10], "inputs": [{"name": "model", "link": 1}, {"name": "guider", "link": 6}, {"name": "sampler", "link": 3}, {"name": "sigmas", "link": 4}, {"name": "latent_image", "link": 5}]},
+    {"id": 9, "type": "BasicGuider", "pos": [700, 10], "inputs": [{"name": "model", "link": 7}, {"name": "conditioning", "link": 2}]},
+    {"id": 10, "type": "VAEDecode", "pos": [1300, 10], "inputs": [{"name": "samples", "link": 8}, {"name": "vae", "link": 9}]},
+    {"id": 11, "type": "SaveImage", "pos": [1600, 10], "inputs": [{"name": "images", "link": 10}]}
+  ],
+  "links": [[1, 1, 0, 8, 0, "MODEL"], [2, 4, 0, 9, 1, "CONDITIONING"], [3, 6, 0, 8, 2, "SAMPLER"], [4, 7, 0, 8, 3, "SIGMAS"], [5, 5, 0, 8, 4, "LATENT"], [6, 1, 0, 9, 0, "MODEL"], [7, 9, 0, 8, 1, "GUIDER"], [8, 8, 0, 10, 0, "LATENT"], [9, 3, 0, 10, 1, "VAE"], [10, 10, 0, 11, 0, "IMAGE"]]
+}

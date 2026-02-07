@@ -1,0 +1,15 @@
+{
+  "last_node_id": 8,
+  "last_link_id": 7,
+  "nodes": [
+    {"id": 1, "type": "CheckpointLoaderSimple", "pos": [10, 10], "widgets_values": ["juggernaut_xl.safetensors"]},
+    {"id": 2, "type": "ControlNetLoader", "pos": [10, 200], "widgets_values": ["controlnet-canny-sdxl-1.0.safetensors"]},
+    {"id": 3, "type": "LoadImage", "pos": [10, 400], "widgets_values": ["rough_sketch.png"]},
+    {"id": 4, "type": "Canny", "pos": [350, 400], "inputs": [{"name": "image", "link": 3}]},
+    {"id": 5, "type": "ControlNetApply", "pos": [700, 10], "inputs": [{"name": "conditioning", "link": 6}, {"name": "control_net", "link": 2}, {"name": "image", "link": 4}]},
+    {"id": 6, "type": "CLIPTextEncode", "pos": [350, 10], "widgets_values": ["photorealistic architectural drawing, modern building, 8k resolution"]},
+    {"id": 7, "type": "KSampler", "pos": [1000, 10], "inputs": [{"name": "model", "link": 1}, {"name": "positive", "link": 5}]},
+    {"id": 8, "type": "UpscaleImage", "pos": [1300, 10], "widgets_values": ["4x-UltraSharp.pth"]}
+  ],
+  "links": [[1, 1, 0, 7, 0, "MODEL"], [2, 2, 0, 5, 1, "CONTROL_NET"], [3, 3, 0, 4, 0, "IMAGE"], [4, 4, 0, 5, 2, "IMAGE"], [5, 6, 0, 5, 0, "CONDITIONING"], [6, 5, 0, 7, 1, "POSITIVE"], [7, 7, 0, 8, 0, "IMAGE"]]
+}

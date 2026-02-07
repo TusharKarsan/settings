@@ -1,0 +1,16 @@
+{
+  "last_node_id": 9,
+  "last_link_id": 8,
+  "nodes": [
+    {"id": 1, "type": "CheckpointLoaderSimple", "pos": [10, 10], "widgets_values": ["juggernaut_xl.safetensors"]},
+    {"id": 2, "type": "LoadImage", "pos": [10, 200], "widgets_values": ["input_photo.jpg"]},
+    {"id": 3, "type": "LoadImage", "pos": [10, 500], "widgets_values": ["style_reference.jpg"]},
+    {"id": 4, "type": "IPAdapterUnifiedLoader", "pos": [350, 10], "widgets_values": ["PLUS (high strength)", "ip-adapter-plus_sdxl_vit-h.safetensors"]},
+    {"id": 5, "type": "IPAdapter", "pos": [700, 10], "inputs": [{"name": "model", "link": 1}, {"name": "ipadapter", "link": 4}, {"name": "image", "link": 3}]},
+    {"id": 6, "type": "CLIPTextEncode", "pos": [700, 250], "widgets_values": ["oil painting of a person, van gogh style, thick brushstrokes"]},
+    {"id": 7, "type": "KSampler", "pos": [1000, 10], "inputs": [{"name": "model", "link": 5}, {"name": "positive", "link": 6}, {"name": "negative", "link": 8}, {"name": "latent_image", "link": 9}]},
+    {"id": 8, "type": "CLIPTextEncode", "pos": [700, 450], "widgets_values": ["text, watermark, blurry, low quality"]},
+    {"id": 9, "type": "VAEEncode", "pos": [350, 200], "inputs": [{"name": "pixels", "link": 2}, {"name": "vae", "link": 7}]}
+  ],
+  "links": [[1, 1, 0, 5, 0, "MODEL"], [3, 3, 0, 5, 2, "IMAGE"], [4, 4, 0, 5, 1, "IPADAPT"], [5, 5, 0, 7, 0, "MODEL"], [6, 6, 0, 7, 1, "POSITIVE"], [7, 1, 2, 9, 1, "VAE"], [8, 8, 0, 7, 2, "NEGATIVE"], [9, 2, 0, 9, 0, "PIXELS"]]
+}
