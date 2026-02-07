@@ -1,11 +1,83 @@
 {
-  "1": { "class_type": "CheckpointLoaderSimple", "inputs": { "ckpt_name": "Juggernaut-XL-v9.safetensors" } },
-  "2": { "class_type": "CLIPTextEncode", "inputs": { "text": "a beautiful birthday cake, cinematic lighting, 8k", "clip": ["1", 1] } },
-  "3": { "class_type": "EmptyLatentImage", "inputs": { "width": 1024, "height": 1024, "batch_size": 1 } },
-  "4": { "class_type": "KSampler", "inputs": { "seed": 42, "steps": 25, "cfg": 7, "sampler_name": "dpmpp_2m", "scheduler": "karras", "denoise": 1, "model": ["1", 0], "positive": ["2", 0], "negative": ["5", 0], "latent_image": ["3", 0] } },
-  "5": { "class_type": "CLIPTextEncode", "inputs": { "text": "text, watermark, blurry, low quality", "clip": ["1", 1] } },
-  "6": { "class_type": "VAEDecode", "inputs": { "samples": ["4", 0], "vae": ["1", 2] } },
-  "7": { "class_type": "TextImage", "inputs": { "text": "Happy Birthday Tom", "font_size": 100, "font_name": "Arial.ttf", "color": "white", "bg_color": "black" } },
-  "8": { "class_type": "ImageOverlay", "inputs": { "base_image": ["6", 0], "overlay_image": ["7", 0], "opacity": 1.0, "x_offset": 0, "y_offset": 800 } },
-  "9": { "class_type": "SaveImage", "inputs": { "images": ["8", 0], "filename_prefix": "Meme_Output" } }
+  "1": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "Juggernaut-XL-v9.safetensors"
+    }
+  },
+  "2": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "a beautiful birthday cake, cinematic lighting, 8k, highly detailed",
+      "clip": ["1", 1]
+    }
+  },
+  "3": {
+    "class_type": "EmptyLatentImage",
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "batch_size": 1
+    }
+  },
+  "4": {
+    "class_type": "KSampler",
+    "inputs": {
+      "seed": 42,
+      "steps": 25,
+      "cfg": 7,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 1,
+      "model": ["1", 0],
+      "positive": ["2", 0],
+      "negative": ["5", 0],
+      "latent_image": ["3", 0]
+    }
+  },
+  "5": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "text, watermark, blurry, low quality, distorted, ugly",
+      "clip": ["1", 1]
+    }
+  },
+  "6": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": ["4", 0],
+      "vae": ["1", 2]
+    }
+  },
+  "7": {
+    "class_type": "Text To Image",
+    "inputs": {
+      "text": "Happy Birthday Tom",
+      "font_size": 100,
+      "font_name": "Arial.ttf",
+      "color_hex": "#FFFFFF",
+      "bg_color_hex": "#00000000",
+      "font_thickness": 2,
+      "margin": 10
+    }
+  },
+  "8": {
+    "class_type": "Image Overlay",
+    "inputs": {
+      "base_image": ["6", 0],
+      "overlay_image": ["7", 0],
+      "width": 800,
+      "height": 200,
+      "x": 112,
+      "y": 800,
+      "opacity": 1.0
+    }
+  },
+  "9": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": ["8", 0],
+      "filename_prefix": "Meme_Output"
+    }
+  }
 }
