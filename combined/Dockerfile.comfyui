@@ -41,19 +41,29 @@ RUN pip3 install --no-cache-dir \
 WORKDIR /app/custom_nodes
 
 # 1. GGUF Support (Required for Flux models)
-RUN git clone https://github.com/city96/ComfyUI-GGUF
-
 # 2. Meme Text Support (For writing "Happy Birthday Tom")
-RUN git clone https://github.com/pythongosssss/ComfyUI-Custom-Scripts
-
 # 3. Photo Touch-up & Face Fixing (Impact Pack)
-RUN git clone https://github.com/ltdrdata/ComfyUI-Impact-Pack
-
 # 4. Efficiency Nodes (Simplifies workflows for paintings/drawings)
-RUN git clone https://github.com/jags111/efficiency-nodes-comfyui
-
 # 5. Manager (To help you update or install more nodes easily)
-RUN git clone https://github.com/ltdrdata/ComfyUI-Manager
+
+# Clone the repositories
+RUN git clone https://github.com/city96/ComfyUI-GGUF && \
+    git clone https://github.com/pythongosssss/ComfyUI-Custom-Scripts && \
+    git clone https://github.com/ltdrdata/ComfyUI-Impact-Pack && \
+    git clone https://github.com/jags111/efficiency-nodes-comfyui && \
+    git clone https://github.com/ltdrdata/ComfyUI-Manager
+
+# --- NEW: Install dependencies for ALL cloned nodes ---
+# This loop finds every requirements.txt in the custom_nodes subfolders and installs them
+RUN for dir in /app/custom_nodes/*/; do \
+        if [ -f "$dir/requirements.txt" ]; then \
+            pip install --no-cache-dir -r "$dir/requirements.txt"; \
+        fi; \
+    done
+
+# --- SPECIAL CASE: Impact Pack install script ---
+# Impact Pack often needs an additional install step for its sub-components
+RUN cd /app/custom_nodes/ComfyUI-Impact-Pack && python3 install.py
 
 WORKDIR /app
 
