@@ -56,6 +56,11 @@ RUN git clone https://github.com/city96/ComfyUI-GGUF && \
     git clone https://github.com/AlekPet/ComfyUI_Custom_Nodes_AlekPet && \
     git clone https://github.com/Munkyfoot/ComfyUI-TextOverlay
 
+# Add this specific repo to match your JSON class types exactly
+RUN git clone https://github.com/comfyanonymous/ComfyUI_examples.git /tmp/examples && \
+    cp -r /tmp/examples/comfy_extra_nodes /app/custom_nodes/ && \
+    rm -rf /tmp/examples
+
 # 2. Ensure system dependencies for text rendering are installed
 USER root
 RUN apt-get update && apt-get install -y \
