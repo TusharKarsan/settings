@@ -61,11 +61,9 @@ RUN for dir in /app/custom_nodes/*/; do \
         fi; \
     done
 
-# --- SPECIAL CASE: Impact Pack install script ---
-# Impact Pack often needs an additional install step for its sub-components
-RUN cd /app/custom_nodes/ComfyUI-Impact-Pack && \
-    python3 install.py && \
-    pip3 install --no-cache-dir ultralytics gguf scikit-image
+    # 3. EXPLICIT FIXES for your specific needs
+# These ensure the GGUF loader and Ultralytics (Impact Pack) are ready
+RUN pip3 install --no-cache-dir ultralytics gguf scikit-image
 
 WORKDIR /app
 
