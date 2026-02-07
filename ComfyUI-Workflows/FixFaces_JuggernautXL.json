@@ -1,0 +1,8 @@
+{
+  "1": { "class_type": "CheckpointLoaderSimple", "inputs": { "ckpt_name": "Juggernaut-XL-v9.safetensors" } },
+  "2": { "class_type": "LoadImage", "inputs": { "image": "photo_with_face.jpg" } },
+  "3": { "class_type": "FaceDetailer", "inputs": { "image": ["2", 0], "model": ["1", 0], "clip": ["1", 1], "vae": ["1", 2], "guide_size": 384, "guide_size_for": true, "max_size": 1024, "seed": 456, "steps": 20, "cfg": 7, "sampler_name": "dpmpp_2m", "scheduler": "karras", "denoise": 0.4, "feather": 5, "noise_mask": true, "force_inpaint": true, "bbox_threshold": 0.5, "bbox_dilation": 10, "bbox_crop_factor": 3.0, "sam_model_opt": ["4", 0], "segm_detector_opt": ["5", 0] } },
+  "4": { "class_type": "SAMLoader", "inputs": { "model_name": "sam_vit_b_01ec2.pth" } },
+  "5": { "class_type": "UltralyticsDetectorProvider", "inputs": { "model_name": "face_yolov8m.pt" } },
+  "6": { "class_type": "SaveImage", "inputs": { "images": ["3", 0], "filename_prefix": "Touched_Up_Photo" } }
+}
