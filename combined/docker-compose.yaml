@@ -79,12 +79,8 @@ services:
               capabilities: [gpu]
     volumes:
       - ${BASE_DIR}/comfyui/models:/root/ComfyUI/models
-      - ${BASE_DIR}/comfyui/clip:/root/ComfyUI/models/clip
-      - ${BASE_DIR}/comfyui/unet:/root/ComfyUI/models/unet
-      - ${BASE_DIR}/comfyui/vae:/root/ComfyUI/models/vae
-      - ${BASE_DIR}/comfyui/custom_nodes:/root/ComfyUI/custom_nodes
-      - ${BASE_DIR}/comfyui/input:/root/comfyui/input
-      - ${BASE_DIR}/comfyui/output:/root/comfyui/output
+      - ${BASE_DIR}/comfyui/input:/root/ComfyUI/input
+      - ${BASE_DIR}/comfyui/output:/root/ComfyUI/output
     restart: always
 
   # ---
