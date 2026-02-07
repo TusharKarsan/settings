@@ -62,8 +62,8 @@ RUN for dir in /app/custom_nodes/*/; do \
         fi; \
     done
 
-# 3. Explicitly install the Ultralytics engine and other essential libs
-RUN pip3 install --no-cache-dir ultralytics gguf scikit-image
+# 3. Explicitly install the Ultralytics engine for the detector node
+RUN pip3 install --no-cache-dir ultralytics gguf scikit-image onnxruntime-gpu
 
 WORKDIR /app
 
