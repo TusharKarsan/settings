@@ -1,0 +1,11 @@
+{
+  "1": { "inputs": { "ckpt_name": "juggernaut_xl.safetensors" }, "class_type": "CheckpointLoaderSimple" },
+  "2": { "inputs": { "image": "input_photo.jpg", "upload": "image" }, "class_type": "LoadImage" },
+  "3": { "inputs": { "text": "An oil painting of the person in the photo, thick brushstrokes, van gogh style, masterpiece", "clip": ["1", 1] }, "class_type": "CLIPTextEncode" },
+  "4": { "inputs": { "upscale_model": "4x-UltraSharp.pth" }, "class_type": "UpscaleModelLoader" },
+  "5": { "inputs": { "upscale_model": ["4", 0], "image": ["2", 0] }, "class_type": "ImageUpscaleWithModel" },
+  "6": { "inputs": { "seed": 123, "steps": 30, "cfg": 7.0, "sampler_name": "dpmpp_2m", "scheduler": "karras", "denoise": 0.6, "model": ["1", 0], "positive": ["3", 0], "negative": ["3", 0], "latent_image": ["7", 0] }, "class_type": "KSampler" },
+  "7": { "inputs": { "pixels": ["5", 0], "vae": ["1", 2] }, "class_type": "VAEEncode" },
+  "8": { "inputs": { "samples": ["6", 0], "vae": ["1", 2] }, "class_type": "VAEDecode" },
+  "9": { "inputs": { "images": ["8", 0] }, "class_type": "SaveImage" }
+}
