@@ -21,4 +21,5 @@ mkdir -p \
   "$BASE_DIR/comfyui/data"
 
 mkdir -p \
+  "$BASE_DIR/qdrant/mcp"
   "$BASE_DIR/qdrant/storage"
