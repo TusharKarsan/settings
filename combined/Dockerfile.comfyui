@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Clone ComfyUI
-RUN git clone https://github.com/comfyanonymous/ComfyUI.git .
+RUN git clone --depth 1 --single-branch https://github.com/comfyanonymous/ComfyUI.git .
 
 # Install core Python requirements
 RUN pip3 install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
