@@ -6,4 +6,4 @@ docker compose build --no-cache comfyui
 # docker compose build --no-cache mcp-bridge
 docker system prune -f
 docker builder prune -a -f
-cd /home/tushar
+# cd /home/tushar
