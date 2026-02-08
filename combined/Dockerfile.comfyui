@@ -47,14 +47,14 @@ WORKDIR /app/custom_nodes
 # 5. Manager (To help you update or install more nodes easily)
 
 # 1. Clone repositories (Added Impact Subpack)
-RUN git clone https://github.com/city96/ComfyUI-GGUF && \
-    git clone https://github.com/pythongosssss/ComfyUI-Custom-Scripts && \
-    git clone https://github.com/ltdrdata/ComfyUI-Impact-Pack && \
-    git clone https://github.com/ltdrdata/ComfyUI-Impact-Subpack && \
-    git clone https://github.com/jags111/efficiency-nodes-comfyui && \
-    git clone https://github.com/ltdrdata/ComfyUI-Manager && \
-    git clone https://github.com/AlekPet/ComfyUI_Custom_Nodes_AlekPet && \
-    git clone https://github.com/WASasquatch/was-node-suite-comfyui
+RUN git clone --depth 1 --single-branch https://github.com/city96/ComfyUI-GGUF && \
+    git clone --depth 1 --single-branch https://github.com/pythongosssss/ComfyUI-Custom-Scripts && \
+    git clone --depth 1 --single-branch https://github.com/ltdrdata/ComfyUI-Impact-Pack && \
+    git clone --depth 1 --single-branch https://github.com/ltdrdata/ComfyUI-Impact-Subpack && \
+    git clone --depth 1 --single-branch https://github.com/jags111/efficiency-nodes-comfyui && \
+    git clone --depth 1 --single-branch https://github.com/ltdrdata/ComfyUI-Manager && \
+    git clone --depth 1 --single-branch https://github.com/AlekPet/ComfyUI_Custom_Nodes_AlekPet && \
+    git clone --depth 1 --single-branch https://github.com/WASasquatch/was-node-suite-comfyui
 
 # Clone these again in mapped volumes then run
 # sudo chown -R 1000:1000 ~/data/comfyui/models
