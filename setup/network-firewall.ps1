@@ -4,6 +4,14 @@ $wslIp = wsl hostname -I
 $wslIp = $wslIp.Split()[0].Trim()
 
 New-NetFirewallRule `
+  -DisplayName "Ollama TCP 11434" `
+  -Direction Inbound `
+  -Protocol TCP `
+  -LocalPort 11434 `
+  -Action Allow `
+  -Profile Any
+
+New-NetFirewallRule `
   -DisplayName "Qdrant MCP Bridge - TCP 8000" `
   -Direction Inbound `
   -Protocol TCP `

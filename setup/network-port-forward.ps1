@@ -7,6 +7,10 @@ $wslIp = $wslIp.Split()[0].Trim()
 # Remove
 # ------
 
+# Ollama
+netsh interface portproxy delete v4tov4 `
+  listenport=11434 listenaddress=0.0.0.0
+
 # Qdrant HTTP
 netsh interface portproxy delete v4tov4 `
   listenport=6333 listenaddress=0.0.0.0
@@ -31,9 +35,22 @@ netsh interface portproxy delete v4tov4 `
 netsh interface portproxy delete v4tov4 `
   listenport=8188 listenaddress=0.0.0.0
 
+# OpenSearch
+netsh interface portproxy delete v4tov4 `
+  listenport=9200 listenaddress=0.0.0.0
+
+# OpenSearch Dashboards
+netsh interface portproxy delete v4tov4 `
+  listenport=5601 listenaddress=0.0.0.0
+
 # -----
 # Allow
 # -----
+
+# Ollama
+netsh interface portproxy add v4tov4 `
+  listenport=11434 listenaddress=0.0.0.0 `
+  connectport=11434 connectaddress=$wslIp
 
 # Qdrant HTTP
 netsh interface portproxy add v4tov4 `
@@ -60,7 +77,17 @@ netsh interface portproxy add v4tov4 `
   listenport=3001 listenaddress=0.0.0.0 `
   connectport=3001 connectaddress=$wslIp
 
-  # ComfyUI
+# ComfyUI
 netsh interface portproxy add v4tov4 `
   listenport=8188 listenaddress=0.0.0.0 `
   connectport=8188 connectaddress=$wslIp
+
+# OpenSearch
+netsh interface portproxy add v4tov4 `
+  listenport=9200 listenaddress=0.0.0.0 `
+  connectport=9200 connectaddress=$wslIp
+
+# OpenSearch Dashboards
+netsh interface portproxy add v4tov4 `
+  listenport=5601 listenaddress=0.0.0.0 `
+  connectport=5601 connectaddress=$wslIp
