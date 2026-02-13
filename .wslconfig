@@ -1,7 +1,7 @@
 [wsl2]
-memory=8GB
-swapFile=D:\\tmp\\swap.vhdx
-swap=16GB
+memory=20GB
+processors=8
+swap=32GB
+swapFile=C:\\TEMP\\wsl-swap.vhdx
 localhostForwarding=true
 kernelCommandLine=ipv6.disable=1
-networkingMode=mirrored

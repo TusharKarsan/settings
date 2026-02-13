@@ -2,8 +2,9 @@
 use_default_settings: true
 
 server:
-  # Port and bind address are usually handled by Docker, 
-  # but we must ensure JSON is allowed for OpenWebUI
+  bind_address: "0.0.0.0"
+  port: 8080
+  ipv6: false
   secret_key: "c2ec7fdb-1ae6-4d30-bbe8-7e455eed1582" # Change this to any random string
   limiter: false # Disable rate limiter for local home use
   image_proxy: true

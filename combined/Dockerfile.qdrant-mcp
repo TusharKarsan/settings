@@ -1,16 +1,19 @@
 FROM python:3.11-slim
 
-# Install uv (used to run mcp-server-qdrant from PyPI)
-RUN pip install --no-cache-dir uv
+WORKDIR /app
+
+COPY mcp-bridge/requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY mcp-bridge/app.py /app/app.py
+COPY mcp-bridge/hybrid_retriever.py /app/hybrid_retriever.py
 
 # Qdrant MCP server listens on FASTMCP_PORT (default 8000)
 ENV FASTMCP_HOST=0.0.0.0 \
     FASTMCP_PORT=8000
 
-# You’ll pass QDRANT_URL / QDRANT_API_KEY / COLLECTION_NAME at runtime
-# e.g. via `docker run -e QDRANT_URL=... -e COLLECTION_NAME=...`
-
-EXPOSE 8000
+    EXPOSE 8000
 
 # Keep it simple, just tell it to use the SSE transport
-CMD ["uvx", "mcp-server-qdrant", "--transport", "sse"]
+# CMD ["uvx", "mcp-server-qdrant", "--transport", "sse"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
