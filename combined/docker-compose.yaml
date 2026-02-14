@@ -181,6 +181,7 @@ services:
       - discovery.type=single-node
       - DISABLE_SECURITY_PLUGIN=true
       - OPENSEARCH_JAVA_OPTS=-Xms2g -Xmx2g
+      - USER_AGENT=Mozilla/5.0 (compatible; OpenWebUI)
     ports:
       - "9200:9200"
     volumes:
