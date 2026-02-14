@@ -269,3 +269,53 @@ graph LR
     COM -- Port 8188 --> CUI
     CUI -- Internal --> OLL
 ```
+
+---
+
+In most cases, a simple `docker pull` followed by restarting the containers is sufficient, but since you have a more complex `combined` setup with **OpenSearch**, **Qdrant**, and specific **MCP-bridges**, there are a few extra steps you should take to ensure your database schemas and environment variables remain intact.
+
+### 1. The Recommended Update Sequence
+
+Run these commands from your `~/settings/combined` directory:
+
+```bash
+# 1. Pull the latest images for all services
+docker-compose pull
+
+# 2. Re-create the containers with the new images
+# The '--remove-orphans' flag ensures old/renamed services are cleaned up
+docker-compose up -d --remove-orphans
+
+# 3. Prune old images to save disk space in WSL
+docker image prune -f
+
+```
+
+---
+
+### 2. Things to Watch Out For
+
+Because you are using **OpenSearch** and **Qdrant**, pay attention to the following:
+
+* **OpenSearch Mapping:** If OpenWebUI updates its RAG (Retrieval-Augmented Generation) logic, it might attempt to re-index documents. Keep an eye on your WSL RAM usage during the first 5 minutes after the update.
+* **Database Migrations:** OpenWebUI handles SQLite/Postgres migrations automatically on startup, but it is always wise to back up your `open-webui` volume before a major version jump.
+* **Breaking Changes in Functions:** If you have custom Python Functions or Actions in OpenWebUI for your Mermaid/Diagram logic, check the logs (`docker logs -f open-webui`) to ensure the update didn't change the internal API for those scripts.
+
+---
+
+### 3. Verification Checklist
+
+Once the update is complete, verify the "Links" in your architecture:
+
+1. **Check Connections:** Go to `Settings > Connections` in OpenWebUI and ensure the **Ollama** status is still green.
+2. **Verify ComfyUI:** Ensure the `COMFYUI_BASE_URL` still resolves.
+3. **Test the Diagrams:** Run a quick test prompt:
+> "Generate a sequence diagram for a Docker pull request."
+
+
+
+### 4. Updating the Rest of the Stack
+
+Since you are updating OpenWebUI, you might want to check if **Ollama** or **Qdrant** have new versions. Updating the Ollama container is particularly useful as it often includes performance optimisations for models like your **Qwen2.5-Coder**.
+
+**Would you like me to check if there are any specific breaking changes in the latest OpenWebUI release notes regarding ComfyUI or OpenSearch integrations?**
