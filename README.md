@@ -297,6 +297,19 @@ Then reclaim space:
 wsl --manage <DistroName> --compact
 ```
 
+Or with this:
+
+```PowerShell
+diskpart
+
+# Inside DiskPart:
+select vdisk file="C:\PATH\TO\YOUR\ext4.vhdx"
+attach vdisk readonly
+compact vdisk
+detach vdisk
+exit
+```
+
 ---
 
 ### 2. Things to Watch Out For
