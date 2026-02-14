@@ -291,6 +291,12 @@ docker image prune -f
 
 ```
 
+Then reclaim space:
+
+```PowerShell
+wsl --manage <DistroName> --compact
+```
+
 ---
 
 ### 2. Things to Watch Out For
