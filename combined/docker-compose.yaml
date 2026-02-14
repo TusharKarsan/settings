@@ -17,14 +17,17 @@ services:
       - COMFYUI_BASE_URL=http://comfyui:8188
       - WEBUI_AUTH=false
       - ENABLE_RAG_WEB_SEARCH=True
+      - THREAD_POOL_SIZE=100
+      - ENABLE_BASE_MODELS_CACHE=True
+      - MODELS_CACHE_TTL=900 # Cache for 15 minutes
       - RAG_WEB_SEARCH_ENGINE=searxng
       - SEARXNG_QUERY_URL=http://searxng:8080/search?format=json&q=<query>
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
       - searxng
-      - ollama          # <<< ADDED
-      - qdrant          # <<< ADDED
+      - ollama
+      - qdrant
     deploy:
       resources:
         reservations:
@@ -56,7 +59,7 @@ services:
       - ./anythingLLM/.env:/app/server/.env
     depends_on:
       - qdrant
-      - ollama          # <<< ADDED
+      - ollama
     restart: unless-stopped
 
   # ---
@@ -76,7 +79,7 @@ services:
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
       - YOLO_CONFIG_DIR=/app/user/default/ultralytics
     depends_on:
-      - ollama          # <<< ADDED (optional but recommended)
+      - ollama
     deploy:
       resources:
         reservations:
@@ -103,8 +106,8 @@ services:
     volumes:
       - ./searxng:/etc/searxng
     environment:
-      - SEARXNG_URL=http://localhost:8080
-      - SEARXNG_BASE_URL=http://localhost:8081/
+      - SEARXNG_URL=http://design.tail201c18.ts.net:8081
+      - SEARXNG_BASE_URL=http://design.tail201c18.ts.net:8081/
       - SEARXNG_REDIS_URL=redis://redis:6379/0
     depends_on:
       - redis
@@ -142,7 +145,7 @@ services:
       - ${BASE_DIR}/qdrant/mcp:/app/fastembed_cache
     depends_on:
       - qdrant
-      - ollama          # <<< ADDED (agent may call LLM)
+      - ollama
     restart: unless-stopped
 
   redis:
@@ -162,12 +165,21 @@ services:
       - OLLAMA_HOST=0.0.0.0
       - OLLAMA_PORT=11434
       - OLLAMA_ORIGINS=*
-      - OLLAMA_CONTEXT_LENGTH=24576
+      - OLLAMA_CONTEXT_LENGTH=12288
       - PYTHONUTF8=1
+      - OLLAMA_KEEP_ALIVE=-1         # Keeps model in VRAM indefinitely
+      - OLLAMA_FLASH_ATTENTION=1     # Significant speed boost for 12GB+ cards
     ports:
       - "11434:11434"
     volumes:
       - ${BASE_DIR}/ollama:/root/.ollama
+    deploy:
+          resources:
+            reservations:
+              devices:
+                - driver: nvidia
+                  count: all
+                  capabilities: [gpu]      
     restart: unless-stopped
 
   # ---
@@ -180,7 +192,7 @@ services:
     environment:
       - discovery.type=single-node
       - DISABLE_SECURITY_PLUGIN=true
-      - OPENSEARCH_JAVA_OPTS=-Xms2g -Xmx2g
+      - OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g
       - USER_AGENT=Mozilla/5.0 (compatible; OpenWebUI)
     ports:
       - "9200:9200"
