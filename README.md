@@ -251,3 +251,21 @@ Would you like me to write a **docker-compose** snippet that links your ComfyUI 
 [Mastering ComfyUI Node Connections](https://www.google.com/search?q=https://www.youtube.com/watch%3Fv%3D2pWvV_Y_eD0)
 
 This video is a great resource for understanding the fundamental logic of connecting nodes in ComfyUI, ensuring your workflows function correctly from start to finish.
+
+---
+
+```mermaid
+graph LR
+    subgraph Windows_Host
+        VS[VS Code + Continue]
+        COM[Browser/ComfyUI]
+    end
+    subgraph WSL_Docker_Bridge
+        OLL[Ollama Container]
+        QD[Qdrant-MCP]
+        CUI[ComfyUI Container]
+    end
+    VS -- API --> OLL
+    COM -- Port 8188 --> CUI
+    CUI -- Internal --> OLL
+```
