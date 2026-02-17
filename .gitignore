@@ -15,3 +15,9 @@
 # ---
 
 combined/searxng/settings.yml.new
+
+# ---
+# Some file I do not understand why it is here, but it is.
+# ---
+
+*:Zone.Identifier

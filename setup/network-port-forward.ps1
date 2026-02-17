@@ -65,7 +65,7 @@ netsh interface portproxy add v4tov4 `
 # Qdrant MCP Bridge
 netsh interface portproxy add v4tov4 `
   listenport=8000 listenaddress=0.0.0.0 `
-  connectport=8000 =$wslIp 
+  connectport=8000 connectaddress=$wslIp
 
 # OpenWebUI
 netsh interface portproxy add v4tov4 `
