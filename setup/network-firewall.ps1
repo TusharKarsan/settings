@@ -1,5 +1,32 @@
 # Requires -RunAsAdministrator
 
+# ------
+# Clean up old rules
+# ------
+
+$ports = 11434, 8000, 6333, 6334, 3000, 3001, 8188
+
+Write-Host "Getting old rules..."
+# Get the actual rule objects (deduped)
+$rules = Get-NetFirewallRule |
+  ForEach-Object {
+    $rule = $_
+    Get-NetFirewallPortFilter -AssociatedNetFirewallRule $rule |
+      Where-Object { $_.LocalPort -in $ports } |
+      ForEach-Object { $rule }
+  } | Sort-Object -Unique
+
+# Show what will be removed
+$rules | Select-Object DisplayName, Direction, Action
+
+# Remove the rules safely
+Write-Host "Removing old rules..."
+$rules | Remove-NetFirewallRule
+
+# ------
+# Set up new rules
+# ------
+
 $wslIp = wsl hostname -I
 $wslIp = $wslIp.Split()[0].Trim()
 
@@ -74,6 +101,24 @@ New-NetFirewallRule `
   -Action Allow `
   -Profile Any
 
-Set-NetIPInterface `
+Get-NetIPInterface `
   -InterfaceAlias "vEthernet (WSL (Hyper-V firewall))" `
-  -Forwarding Enabled
+  -AddressFamily IPv4 | `
+  Select-Object InterfaceAlias, AddressFamily, Forwarding
+
+# ------
+# List Them
+# ------
+
+Write-Host "Getting new rules..."
+# Get the actual rule objects (deduped)
+$rules = Get-NetFirewallRule |
+  ForEach-Object {
+    $rule = $_
+    Get-NetFirewallPortFilter -AssociatedNetFirewallRule $rule |
+      Where-Object { $_.LocalPort -in $ports } |
+      ForEach-Object { $rule }
+  } | Sort-Object -Unique
+
+# Show what will be removed
+$rules | Select-Object DisplayName, Direction, Action
