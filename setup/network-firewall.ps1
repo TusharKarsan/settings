@@ -93,13 +93,30 @@ New-NetFirewallRule `
 # Tailscale
 # ------
 
+$ruleName = "Tailscale Traffic (Android Fix)"
+
+# Check if the rule exists
+$existing = Get-NetFirewallRule -DisplayName $ruleName -ErrorAction SilentlyContinue
+
+# If it exists, remove it
+if ($existing) {
+    Remove-NetFirewallRule -DisplayName $ruleName
+}
+
+# Create the rule fresh
 New-NetFirewallRule `
-  -DisplayName "Tailscale Traffic (Android Fix)" `
+  -DisplayName $ruleName `
   -Direction Inbound `
   -Protocol TCP `
   -RemoteAddress 100.64.0.0/10 `
   -Action Allow `
   -Profile Any
+
+Get-NetFirewallRule -DisplayName $ruleName
+
+Set-NetIPInterface `
+  -InterfaceAlias "vEthernet (WSL (Hyper-V firewall))" `
+  -Forwarding Enabled
 
 Get-NetIPInterface `
   -InterfaceAlias "vEthernet (WSL (Hyper-V firewall))" `
