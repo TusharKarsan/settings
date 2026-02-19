@@ -39,6 +39,11 @@ docker system prune -af 2>/dev/null || true
 docker builder prune -af 2>/dev/null || true
 
 echo
+echo "--- Cleaning WSL logs ---"
+sudo find /var/log -type f -name "*.gz" -delete
+sudo find /var/log -type f -size +10M -delete
+
+echo
 echo "--- After cleanup ---"
 df -h /
 
