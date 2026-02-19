@@ -65,8 +65,10 @@ services:
   # ---
   # --- Image Generation ---
   # custom_nodes/ComfyUI-Manager/config.ini
-  # auto_update = false
-  # check_registry = false
+  # `public` default, fetches automatically, aggresively
+  # `private` uses the local cache if available
+  # `offline` stops all external connections for the manager
+  # network_mode = private
   # ---
 
   comfyui:
