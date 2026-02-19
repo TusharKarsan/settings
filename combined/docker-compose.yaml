@@ -64,6 +64,9 @@ services:
 
   # ---
   # --- Image Generation ---
+  # custom_nodes/ComfyUI-Manager/config.ini
+  # auto_update = false
+  # check_registry = false
   # ---
 
   comfyui:
@@ -71,7 +74,6 @@ services:
       context: .
       dockerfile: Dockerfile.comfyui
     container_name: comfyui
-    command: ["python3", "main.py", "--listen", "0.0.0.0", "--disable-registry"]
     ports:
       - "8188:8188"
     environment:
