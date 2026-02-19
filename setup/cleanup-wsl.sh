@@ -42,9 +42,9 @@ echo
 echo "--- After cleanup ---"
 df -h /
 
-echo
-echo "Running ChkDsk equivalent for WSL
-sudo fsck /dev/sdd
+# echo
+# echo "Running ChkDsk equivalent for WSL"
+# sudo fsck /dev/sdd
 
 echo
 echo "=== Cleanup complete ==="
