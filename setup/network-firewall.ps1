@@ -6,22 +6,26 @@
 
 $ports = 11434, 8000, 6333, 6334, 3000, 3001, 8188
 
-Write-Host "Getting old rules..."
-# Get the actual rule objects (deduped)
+Write-Host "Collecting rules with matching ports..."
+
 $rules = Get-NetFirewallRule |
-  ForEach-Object {
-    $rule = $_
-    Get-NetFirewallPortFilter -AssociatedNetFirewallRule $rule |
-      Where-Object { $_.LocalPort -in $ports } |
-      ForEach-Object { $rule }
-  } | Sort-Object -Unique
+    ForEach-Object {
+        $rule = $_
+        $filters = Get-NetFirewallPortFilter -AssociatedNetFirewallRule $rule
 
-# Show what will be removed
-$rules | Select-Object DisplayName, Direction, Action
+        # Match any filter that has a LocalPort AND is in our list
+        if ($filters.LocalPort -ne $null -and ($filters.LocalPort | ForEach-Object { $_ -in $ports } | Where-Object { $_ })) {
+            $rule
+        }
+    } | Sort-Object -Unique
 
-# Remove the rules safely
-Write-Host "Removing old rules..."
+Write-Host "`nRules that will be removed:"
+$rules | Select-Object DisplayName, Direction, Action, Enabled
+
+Write-Host "`nRemoving rules..."
 $rules | Remove-NetFirewallRule
+
+Write-Host "Done."
 
 # ------
 # Set up new rules
