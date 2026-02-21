@@ -116,11 +116,18 @@ Inside Notebook:
 !uv pip install --system xgboost plotly
 ```
 
-*A quick tip:*
-Since you're using DuckDB in this new lab, you can query your CSV files directly using SQL inside your Python notebooks. It’s much faster than Pandas for large datasets:
+> [!Tip] *A quick tip:*
+> Since you're using DuckDB in this new lab, you can query your CSV files directly using SQL inside your Python notebooks. It’s much faster than Pandas for large datasets:
 
 ```Python
 import duckdb
 # Query a CSV file as if it were a SQL table
 results = duckdb.query("SELECT * FROM 'data/raw/uk_energy_stats.csv' WHERE price_gbp > 100").to_df()
+```
+
+> [!Note]
+> To remote all images used by docker compose:
+
+```bash
+docker-compose down --rmi all --volumes
 ```
