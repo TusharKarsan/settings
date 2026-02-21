@@ -1,0 +1,28 @@
+services:
+
+  lab-env:
+    build: .
+    container_name: data_science_lab
+    ports:
+      - "8888:8888"
+    volumes:
+      # Map your local folders to the container
+      - ./notebooks:/app/notebooks
+      - ./data:/app/data
+      - ./src:/app/src
+      # Optional: Map your Obsidian vault if you want to export notes directly
+      # - /path/to/your/ObsidianVault:/app/obsidian
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - PYTHONPATH=/app/src
+    restart: always
+
+  # Optional: A lightweight SQL UI for your DuckDB files
+  duckdb-explorer:
+    image: evidence-dev/evidence:latest
+    container_name: duckdb_ui
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/data
+    profiles: ["ui"] # Only runs if you call 'docker-compose --profile ui up'
