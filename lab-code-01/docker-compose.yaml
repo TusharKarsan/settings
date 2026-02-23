@@ -4,39 +4,6 @@ services:
   # --- AI Interfaces & Orchestration ---
   # ---
 
-  openwebui:
-    image: ghcr.io/open-webui/open-webui:cuda
-    container_name: openwebui
-    ports:
-      - "3000:8080"
-    volumes:
-      - ${BASE_DIR}/openwebui/data:/app/backend/data
-    environment:
-      # <<< CHANGED — now points to WSL-native Ollama container
-      - OLLAMA_BASE_URL=http://ollama:11434
-      - COMFYUI_BASE_URL=http://comfyui:8188
-      - WEBUI_AUTH=false
-      - ENABLE_RAG_WEB_SEARCH=True
-      - THREAD_POOL_SIZE=100
-      - ENABLE_BASE_MODELS_CACHE=True
-      - MODELS_CACHE_TTL=900 # Cache for 15 minutes
-      - RAG_WEB_SEARCH_ENGINE=searxng
-      - SEARXNG_QUERY_URL=http://searxng:8080/search?format=json&q=<query>
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    depends_on:
-      - searxng
-      - ollama
-      - qdrant
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
-    restart: always
-
   anythingllm:
     image: mintplexlabs/anythingllm:latest
     container_name: anythingllm
@@ -60,62 +27,6 @@ services:
     depends_on:
       - qdrant
       - ollama
-    restart: unless-stopped
-
-  # ---
-  # --- Image Generation ---
-  # custom_nodes/ComfyUI-Manager/config.ini
-  # `public` default, fetches automatically, aggresively
-  # `private` uses the local cache if available
-  # `offline` stops all external connections for the manager
-  # network_mode = private
-  # ---
-
-  comfyui:
-    build:
-      context: .
-      dockerfile: Dockerfile.comfyui
-    container_name: comfyui
-    ports:
-      - "8188:8188"
-    environment:
-      - WEB_ENABLE_AUTH=false
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
-      - YOLO_CONFIG_DIR=/app/user/default/ultralytics
-    depends_on:
-      - ollama
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
-    volumes:
-      - ${BASE_DIR}/comfyui/models:/app/models
-      - ${BASE_DIR}/comfyui/input:/app/input
-      - ${BASE_DIR}/comfyui/output:/app/output
-      - ${BASE_DIR}/comfyui/custom_nodes:/app/custom_nodes
-    restart: always
-
-  # ---
-  # --- Search & Metadata ---
-  # ---
-
-  searxng:
-    image: searxng/searxng:latest
-    container_name: searxng
-    ports:
-      - "8081:8080"
-    volumes:
-      - ./searxng:/etc/searxng
-    environment:
-      - SEARXNG_URL=http://design.tail201c18.ts.net:8081
-      - SEARXNG_BASE_URL=http://design.tail201c18.ts.net:8081/
-      - SEARXNG_REDIS_URL=redis://redis:6379/0
-    depends_on:
-      - redis
     restart: unless-stopped
 
   # ---
@@ -152,12 +63,6 @@ services:
       - qdrant
       - ollama
     restart: unless-stopped
-
-  redis:
-    image: redis:7-alpine
-    container_name: redis
-    command: redis-server --save 60 1 --loglevel warning
-    restart: always
 
   # ---
   # --- NEW: WSL-native Ollama ---
