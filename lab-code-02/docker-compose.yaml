@@ -1,0 +1,81 @@
+# lab-openrag-01/docker-compose.yaml
+services:
+
+  # --- LLM ENGINE ---
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_PORT=11434
+      - OLLAMA_ORIGINS=*
+      - OLLAMA_CONTEXT_LENGTH=12288
+      - PYTHONUTF8=1
+      - OLLAMA_KEEP_ALIVE=-1         # Keeps model in VRAM indefinitely
+      - OLLAMA_FLASH_ATTENTION=1     # Significant speed boost for 12GB+ cards
+    ports:
+      - "11434:11434"
+    volumes:
+      - ${BASE_DIR}/ollama:/root/.ollama
+    deploy:
+          resources:
+            reservations:
+              devices:
+                - driver: nvidia
+                  count: all
+                  capabilities: [gpu]
+    restart: unless-stopped
+
+  # --- VECTOR STORE (OpenSearch) ---
+  opensearch:
+    image: opensearchproject/opensearch:latest
+    container_name: opensearch
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms2g -Xmx2g" # Optimised for your 32GB RAM
+      - DISABLE_INSTALL_DEMO_CONFIG=true
+      - DISABLE_SECURITY_PLUGIN=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    volumes:
+      - ${BASE_DIR}/opensearch_data:/usr/share/opensearch/data
+    restart: unless-stopped
+
+  # --- ORCHESTRATION (Langflow) ---
+  langflow:
+    image: langflowai/langflow:latest
+    container_name: langflow
+    ports:
+      - "7860:7860"
+    environment:
+      - LANGFLOW_DATABASE_URL=sqlite:////data/langflow.db
+    volumes:
+      - ${BASE_DIR}/langflow_data:/data
+    restart: unless-stopped
+
+  # --- OPENRAG API & UI ---
+  openrag:
+    image: icr.io/openrag/openrag-api:latest # IBM OpenRag Official
+    container_name: openrag-api
+    ports:
+      - "8000:8000"
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OPENSEARCH_URL=http://opensearch:9200
+      - DOCLING_ENABLED=true
+    depends_on:
+      - ollama
+      - opensearch
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
