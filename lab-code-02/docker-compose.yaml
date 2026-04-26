@@ -81,8 +81,8 @@ services:
   #   restart: unless-stopped
 
   # --- DOCUMENT PARSING (Docling) ---
-  docling-http:
-    image: quay.io/ds4sd/docling-serve:latest
+  docling-serve:
+    image: quay.io/ds4sd/docling-serve-gpu:latest
     container_name: docling-serve
     ports:
       - "8080:8080"
