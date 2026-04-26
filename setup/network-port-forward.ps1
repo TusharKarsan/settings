@@ -52,6 +52,10 @@ netsh interface portproxy delete v4tov4 `
 netsh interface portproxy delete v4tov4 `
   listenport=7860 listenaddress=0.0.0.0
 
+# Docling
+netsh interface portproxy delete v4tov4 `
+  listenport=8080 listenaddress=0.0.0.0
+
 # -----
 # Allow
 # -----
@@ -112,3 +116,7 @@ netsh interface portproxy add v4tov4 `
   listenport=7860 listenaddress=0.0.0.0 `
   connectport=7860 connectaddress=$wslIp
 
+# Docling
+netsh interface portproxy add v4tov4 `
+  listenport=8080 listenaddress=0.0.0.0 `
+  connectport=8080 connectaddress=$wslIp

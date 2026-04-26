@@ -4,7 +4,7 @@
 # Clean up old rules
 # ------
 
-$ports = 11434, 8000, 6333, 6334, 3000, 3001, 8188, 9200, 7860, 8000
+$ports = 11434, 8000, 6333, 6334, 3000, 3001, 8188, 9200, 7860, 8000, 8080
 
 Write-Host "Collecting rules with matching ports..."
 
@@ -119,6 +119,14 @@ New-NetFirewallRule `
   -Direction Inbound `
   -Protocol TCP `
   -LocalPort 8000 `
+  -Action Allow `
+  -Profile Any
+
+New-NetFirewallRule `
+  -DisplayName "Docling - TCP 8080" `
+  -Direction Inbound `
+  -Protocol TCP `
+  -LocalPort 8080 `
   -Action Allow `
   -Profile Any
 
