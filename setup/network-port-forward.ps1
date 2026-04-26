@@ -20,6 +20,7 @@ netsh interface portproxy delete v4tov4 `
   listenport=6334 listenaddress=0.0.0.0
 
 # Qdrant MCP Bridge
+# OpenRAG API
 netsh interface portproxy delete v4tov4 `
   listenport=8000 listenaddress=0.0.0.0
 
@@ -47,6 +48,10 @@ netsh interface portproxy delete v4tov4 `
 netsh interface portproxy delete v4tov4 `
   listenport=5601 listenaddress=0.0.0.0
 
+# LangFlow AI
+netsh interface portproxy delete v4tov4 `
+  listenport=7860 listenaddress=0.0.0.0
+
 # -----
 # Allow
 # -----
@@ -67,6 +72,7 @@ netsh interface portproxy add v4tov4 `
   connectport=6334 connectaddress=$wslIp
 
 # Qdrant MCP Bridge
+# OpenRAG API
 netsh interface portproxy add v4tov4 `
   listenport=8000 listenaddress=0.0.0.0 `
   connectport=8000 connectaddress=$wslIp
@@ -100,3 +106,9 @@ netsh interface portproxy add v4tov4 `
 netsh interface portproxy add v4tov4 `
   listenport=5601 listenaddress=0.0.0.0 `
   connectport=5601 connectaddress=$wslIp
+
+# LangFlow AI
+netsh interface portproxy add v4tov4 `
+  listenport=7860 listenaddress=0.0.0.0 `
+  connectport=7860 connectaddress=$wslIp
+

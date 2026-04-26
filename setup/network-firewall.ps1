@@ -4,7 +4,7 @@
 # Clean up old rules
 # ------
 
-$ports = 11434, 8000, 6333, 6334, 3000, 3001, 8188
+$ports = 11434, 8000, 6333, 6334, 3000, 3001, 8188, 9200, 7860, 8000
 
 Write-Host "Collecting rules with matching ports..."
 
@@ -66,7 +66,6 @@ New-NetFirewallRule `
   -Action Allow `
   -Profile Any
 
-# SearXNG
 New-NetFirewallRule `
   -DisplayName "SearXNG - TCP 8081" `
   -Direction Inbound `
@@ -75,7 +74,6 @@ New-NetFirewallRule `
   -Action Allow `
   -Profile Any
 
-# OpenWebUI
 New-NetFirewallRule `
   -DisplayName "OpenWebUI - TCP 3000" `
   -Direction Inbound `
@@ -84,21 +82,43 @@ New-NetFirewallRule `
   -Action Allow `
   -Profile Any
 
-# Anaything LLM
 New-NetFirewallRule `
-  -DisplayName "Anaything LLM - TCP 3001" `
+  -DisplayName "Anything LLM - TCP 3001" `
   -Direction Inbound `
   -Protocol TCP `
   -LocalPort 3001 `
   -Action Allow `
   -Profile Any
 
-# Anaything LLM
 New-NetFirewallRule `
   -DisplayName "ComfyUI - TCP 8188" `
   -Direction Inbound `
   -Protocol TCP `
   -LocalPort 8188 `
+  -Action Allow `
+  -Profile Any
+
+New-NetFirewallRule `
+  -DisplayName "OpenSearch - TCP 9200" `
+  -Direction Inbound `
+  -Protocol TCP `
+  -LocalPort 9200 `
+  -Action Allow `
+  -Profile Any
+
+New-NetFirewallRule `
+  -DisplayName "LangFlow AI TCP 7860" `
+  -Direction Inbound `
+  -Protocol TCP `
+  -LocalPort 7860 `
+  -Action Allow `
+  -Profile Any
+
+New-NetFirewallRule `
+  -DisplayName "OpenRAG - TCP 8000" `
+  -Direction Inbound `
+  -Protocol TCP `
+  -LocalPort 8000 `
   -Action Allow `
   -Profile Any
 
