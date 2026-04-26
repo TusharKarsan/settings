@@ -58,19 +58,34 @@ services:
       - ${BASE_DIR}/langflow_data:/data
     restart: unless-stopped
 
-  # --- OPENRAG API & UI ---
-  openrag:
-    image: icr.io/openrag/openrag-api:latest # IBM OpenRag Official
-    container_name: openrag-api
+  # --- OPENRAG API & UI --- Requires IBM Account, using docling instead
+  # openrag:
+  #   image: icr.io/openrag/openrag-api:latest # IBM OpenRag Official
+  #   container_name: openrag-api
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     - OLLAMA_BASE_URL=http://ollama:11434
+  #     - OPENSEARCH_URL=http://opensearch:9200
+  #     - DOCLING_ENABLED=true
+  #   depends_on:
+  #     - ollama
+  #     - opensearch
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: 1
+  #             capabilities: [gpu]
+  #   restart: unless-stopped
+
+  # --- DOCUMENT PARSING (Docling) ---
+  docling-http:
+    image: quay.io/ds4sd/docling-serve:latest
+    container_name: docling-serve
     ports:
-      - "8000:8000"
-    environment:
-      - OLLAMA_BASE_URL=http://ollama:11434
-      - OPENSEARCH_URL=http://opensearch:9200
-      - DOCLING_ENABLED=true
-    depends_on:
-      - ollama
-      - opensearch
+      - "8080:8080"
     deploy:
       resources:
         reservations:
