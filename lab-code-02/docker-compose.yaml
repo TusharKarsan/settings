@@ -10,20 +10,19 @@ services:
       - OLLAMA_PORT=11434
       - OLLAMA_ORIGINS=*
       - OLLAMA_CONTEXT_LENGTH=12288
-      - PYTHONUTF8=1
-      - OLLAMA_KEEP_ALIVE=-1         # Keeps model in VRAM indefinitely
-      - OLLAMA_FLASH_ATTENTION=1     # Significant speed boost for 12GB+ cards
+      - OLLAMA_KEEP_ALIVE=-1
+      - OLLAMA_FLASH_ATTENTION=1
     ports:
       - "11434:11434"
     volumes:
       - ${BASE_DIR}/ollama:/root/.ollama
     deploy:
-          resources:
-            reservations:
-              devices:
-                - driver: nvidia
-                  count: all
-                  capabilities: [gpu]
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
     restart: unless-stopped
 
   # --- VECTOR STORE (OpenSearch) ---
@@ -33,7 +32,7 @@ services:
     environment:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
-      - "OPENSEARCH_JAVA_OPTS=-Xms2g -Xmx2g" # Optimised for your 32GB RAM
+      - "OPENSEARCH_JAVA_OPTS=-Xms2g -Xmx2g"
       - DISABLE_INSTALL_DEMO_CONFIG=true
       - DISABLE_SECURITY_PLUGIN=true
     ulimits:
@@ -46,7 +45,7 @@ services:
       - ${BASE_DIR}/opensearch_data:/usr/share/opensearch/data
     restart: unless-stopped
 
-  # --- ORCHESTRATION (Langflow) ---
+  # --- ORCHESTRATION & RAG LOGIC ---
   langflow:
     image: langflowai/langflow:latest
     container_name: langflow
@@ -54,38 +53,9 @@ services:
       - "7860:7860"
     environment:
       - LANGFLOW_DATABASE_URL=sqlite:////data/langflow.db
+      - LANGFLOW_COMPONENTS_PATH=/data/components
     volumes:
       - ${BASE_DIR}/langflow_data:/data
-    restart: unless-stopped
-
-  # --- OPENRAG API & UI --- Requires IBM Account, using docling instead
-  # openrag:
-  #   image: icr.io/openrag/openrag-api:latest # IBM OpenRag Official
-  #   container_name: openrag-api
-  #   ports:
-  #     - "8000:8000"
-  #   environment:
-  #     - OLLAMA_BASE_URL=http://ollama:11434
-  #     - OPENSEARCH_URL=http://opensearch:9200
-  #     - DOCLING_ENABLED=true
-  #   depends_on:
-  #     - ollama
-  #     - opensearch
-  #   deploy:
-  #     resources:
-  #       reservations:
-  #         devices:
-  #           - driver: nvidia
-  #             count: 1
-  #             capabilities: [gpu]
-  #   restart: unless-stopped
-
-  # --- DOCUMENT PARSING (Docling) ---
-  docling-serve:
-    image: quay.io/ds4sd/docling-serve-gpu:latest
-    container_name: docling-serve
-    ports:
-      - "8080:8080"
     deploy:
       resources:
         reservations:
