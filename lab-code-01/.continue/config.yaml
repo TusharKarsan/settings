@@ -1,0 +1,28 @@
+models:
+  - title: "Llama 4 (Academic Research)"
+    provider: "ollama"
+    model: "llama4:latest"
+    systemPrompt: "You are an expert UK academic assistant. Use British English (e.g., -ise, -our). Focus on Harvard/APA 7th citations and formal tone. Avoid Americanisms."
+  - title: "DeepSeek R1 (Python & Data)"
+    provider: "ollama"
+    model: "deepseek-r1:32b"
+    systemPrompt: "You are a senior data scientist. Expert in Python, NumPy, pandas, and Seaborn. Provide clean, efficient, and well-documented code."
+  - title: "Mistral Small (Grammar & Synonyms)"
+    provider: "ollama"
+    model: "mistral-small3.1:latest"
+    systemPrompt: "You are a professional editor. Suggest sophisticated synonyms and improve sentence structure while strictly following British English grammar."
+
+tabAutocompleteModel:
+  title: "DeepSeek R1"
+  provider: "ollama"
+  model: "deepseek-r1:32b"
+
+embeddingsProvider:
+  provider: "ollama"
+  model: "nomic-embed-text:latest"
+
+customCommands:
+  - name: "paraphrase"
+    prompt: "Paraphrase this text for a university essay. Maintain the original meaning but improve flow and academic tone using British English: {{{ input }}}"
+  - name: "cite"
+    prompt: "Provide a formal citation for the following information in Harvard style: {{{ input }}}"

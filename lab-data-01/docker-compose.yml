@@ -1,0 +1,95 @@
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: data-lab-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: datalab
+      POSTGRES_PASSWORD: datalab
+      POSTGRES_DB: datalab
+    ports:
+      - "5432:5432"
+    volumes:
+      - ${BASE_DIR}/postgresql:/var/lib/postgresql/data
+
+  minio:
+    image: minio/minio:latest
+    container_name: data-lab-minio
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ${BASE_DIR}/minio:/data
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest
+    container_name: data-lab-mlflow
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - minio
+    environment:
+      MLFLOW_TRACKING_URI: http://0.0.0.0:5000
+      AWS_ACCESS_KEY_ID: minio
+      AWS_SECRET_ACCESS_KEY: minio123
+      MLFLOW_S3_ENDPOINT_URL: http://minio:9000
+    command: >
+      mlflow server
+      --backend-store-uri postgresql://datalab:datalab@postgres:5432/datalab
+      --default-artifact-root s3://mlflow/
+      --host 0.0.0.0
+      --port 5000
+    ports:
+      - "5000:5000"
+
+  airflow:
+    image: apache/airflow:2.8.1
+    container_name: data-lab-airflow
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://datalab:datalab@postgres:5432/datalab
+      AIRFLOW__CORE__FERNET_KEY: "CHANGE_ME"
+      AIRFLOW__WEBSERVER__SECRET_KEY: "CHANGE_ME_TOO"
+    volumes:
+      - ${BASE_DIR}/airflow:/opt/airflow/dags
+    ports:
+      - "8080:8080"
+    command: >
+      bash -c "
+      airflow db init &&
+      airflow users create
+        --username admin
+        --password admin
+        --firstname Admin
+        --lastname User
+        --role Admin
+        --email admin@example.com &&
+      airflow webserver &
+      airflow scheduler
+      "
+
+  worker:
+    build:
+      context: ./worker
+    container_name: data-lab-worker
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - minio
+    volumes:
+      - ${BASE_DIR}/worker:/app
+    environment:
+      DATABASE_URL: postgresql://datalab:datalab@postgres:5432/datalab
+      S3_ENDPOINT: http://minio:9000
+      AWS_ACCESS_KEY_ID: minio
+      AWS_SECRET_ACCESS_KEY: minio123
+    command: sleep infinity

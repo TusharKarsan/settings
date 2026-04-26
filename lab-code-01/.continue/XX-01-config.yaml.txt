@@ -1,0 +1,132 @@
+name: Ollama Local Config
+version: 1.0.0
+schema: v1
+
+# -----------------------------
+#  Secondary Embed Model
+# -----------------------------
+
+
+# -----------------------------
+#  Reranker
+# -----------------------------
+
+
+models:
+  # -----------------------------
+  #  Planner Agent (GPT-4o-mini)
+  # -----------------------------
+  - name: "Planner Agent (GPT-4o-mini)"
+    provider: ollama
+    apiBase: http://design:11434
+    requestOptions:
+      noProxy: ["design"]
+    model: chevalblanc/gpt-4o-mini:latest
+    roles: [chat]
+    capabilities: [chat, plan, tool_use]
+
+  # -----------------------------
+  #  Architect Agent
+  # -----------------------------
+  - name: "Architect Agent (Llama 3.1)"
+    provider: ollama
+    apiBase: http://design:11434
+    requestOptions:
+      noProxy: ["design"]
+    model: llama3.1:latest
+    roles: [chat, edit, apply]
+    capabilities: [chat, edit, apply, tool_use]
+
+  # -----------------------------
+  #  Coder Agent
+  # -----------------------------
+  - name: "Coder Agent (Qwen 3 Coder)"
+    provider: ollama
+    apiBase: http://design:11434
+    requestOptions:
+      noProxy: ["design"]
+    model: qwen3-coder:latest
+    roles: [autocomplete, edit, apply, chat]
+    capabilities: [chat, edit, apply, autocomplete, tool_use]
+
+  # -----------------------------
+  #  Writer Agent
+  # -----------------------------
+  - name: "Writer Agent (Gemma 3)"
+    provider: ollama
+    apiBase: http://design:11434
+    requestOptions:
+      noProxy: ["design"]
+    model: gemma3:latest
+    roles: [chat, edit]
+    capabilities: [chat, edit, tool_use]
+
+  # -----------------------------
+  #  Debugger Agent
+  # -----------------------------
+  - name: "Debugger Agent (Llama 3.1)"
+    provider: ollama
+    apiBase: http://design:11434
+    requestOptions:
+      noProxy: ["design"]
+    model: llama3.1:latest
+    roles: [chat, edit, apply]
+    capabilities: [chat, edit, apply, tool_use]
+
+  # -----------------------------
+  #  Academic Agent
+  # -----------------------------
+  - name: "Academic Agent (Harvard Referencing)"
+    provider: ollama
+    apiBase: http://design:11434
+    requestOptions:
+      noProxy: ["design"]
+    model: llama3.1:latest
+    roles: [chat, edit]
+    capabilities: [chat, edit, tool_use]
+
+  # -----------------------------
+  #  Embedding Model
+  # -----------------------------
+  - name: "BGE M3"
+    provider: ollama
+    apiBase: http://design:11434
+    requestOptions:
+      noProxy: ["design"]
+    model: bge-m3:latest
+    roles: [embed]
+    capabilities: [embed]
+
+  # -----------------------------
+  #  Secondary Embed Model
+  # -----------------------------
+  - name: "Nomic Embed"
+    provider: ollama
+    apiBase: http://design:11434
+    requestOptions:
+      noProxy: ["design"]
+    model: nomic-embed-text:latest
+    roles: [embed]
+    capabilities: [embed]
+    embedOptions:
+      maxBatchSize: 20
+      maxChunkSize: 800
+
+  # -----------------------------
+  #  Reranker
+  # -----------------------------
+  - name: "Qwen3 Reranker"
+    provider: ollama
+    apiBase: http://design:11434
+    requestOptions:
+      noProxy: ["design"]
+    model: dengcao/Qwen3-Reranker-8B:Q8_0
+    roles: [rerank]
+    capabilities: [rerank]
+
+# -----------------------------
+#  Rules
+# -----------------------------
+rules:
+  - "You must always use British English spelling (e.g., 'optimise', 'centre') and quote prices in GBP (£). Use Celsius for temperature and Miles for distance."
+  - "Format responses for Obsidian. Use Mermaid for all diagrams and SVG for custom visuals."

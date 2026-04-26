@@ -1,0 +1,13 @@
+{
+  "1": { "inputs": { "ckpt_name": "juggernaut_xl.safetensors" }, "class_type": "CheckpointLoaderSimple" },
+  "2": { "inputs": { "image": "input_diagram_sketch.png", "upload": "image" }, "class_type": "LoadImage" },
+  "3": { "inputs": { "control_net_name": "controlnet-canny-sdxl-1.0.safetensors" }, "class_type": "ControlNetLoader" },
+  "4": { "inputs": { "low_threshold": 100, "high_threshold": 200, "image": ["2", 0] }, "class_type": "Canny" },
+  "5": { "inputs": { "strength": 0.8, "start_percent": 0.0, "end_percent": 1.0, "positive": ["6", 0], "negative": ["7", 0], "control_net": ["3", 0], "image": ["4", 0] }, "class_type": "ControlNetApply" },
+  "6": { "inputs": { "text": "A professional DevOps architecture diagram, clean lines, isometric, 2d vector art, white background, tech icons, high resolution", "clip": ["1", 1] }, "class_type": "CLIPTextEncode" },
+  "7": { "inputs": { "text": "photo, 3d, shadows, messy, text, handwriting, blurry", "clip": ["1", 1] }, "class_type": "CLIPTextEncode" },
+  "8": { "inputs": { "seed": 88, "steps": 25, "cfg": 7.0, "sampler_name": "dpmpp_2m", "scheduler": "karras", "denoise": 1.0, "model": ["1", 0], "positive": ["5", 0], "negative": ["5", 1], "latent_image": ["9", 0] }, "class_type": "KSampler" },
+  "9": { "inputs": { "width": 1024, "height": 1024, "batch_size": 1 }, "class_type": "EmptyLatentImage" },
+  "10": { "inputs": { "samples": ["8", 0], "vae": ["1", 2] }, "class_type": "VAEDecode" },
+  "11": { "inputs": { "images": ["10", 0] }, "class_type": "SaveImage" }
+}

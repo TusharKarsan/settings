@@ -1,0 +1,6 @@
+pandas
+polars
+scikit-learn
+psycopg2-binary
+boto3
+mlflow

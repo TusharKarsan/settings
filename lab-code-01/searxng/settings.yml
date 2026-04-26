@@ -1,0 +1,38 @@
+use_default_settings: true
+
+general:
+  instance_name: "Tushar Academic Search"
+  # Ensures results use British English and UK context
+  default_locale: "en-GB"
+
+search:
+  safe_search: 0
+  autocomplete: "google"
+  formats:
+    - html
+    - json
+
+server:
+  port: 8080
+  bind_address: "0.0.0.0" # Explicit IPv4
+  secret_key: "academic_research_key_2026"
+  limiter: false
+
+engines:
+  - name: google
+    engine: google
+    shortcut: g
+    base_url: "https://www.google.co.uk"
+  - name: wolframalpha
+    engine: wolframalpha_api
+    shortcut: wa
+  - name: arxiv
+    engine: arxiv
+    shortcut: arx
+  - name: google scholar
+    engine: google_scholar
+    shortcut: gs
+
+ui:
+  theme: simple
+  center_alignment: true

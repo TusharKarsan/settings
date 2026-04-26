@@ -1,0 +1,78 @@
+name: Ollama Local Config
+version: 1.0.0
+schema: v1
+
+# --- Models Configuration ---
+models:
+  # --- Planner Agent (GPT-4o-mini) ---
+  - name: "Planner Agent (GPT-4o-mini)"
+    provider: ollama
+    apiBase: http://design:11434
+    model: chevalblanc/gpt-4o-mini:latest
+    roles: [chat] # 'plan' is handled by 'chat' role + 'plan' capability
+    capabilities: [chat, plan, tool_use]
+
+  # --- Coder Agent & Autocomplete ---
+  - name: "Coder Agent (Qwen 3 Coder)"
+    provider: ollama
+    apiBase: http://design:11434
+    model: qwen3-coder:latest
+    roles: [autocomplete, chat, edit, apply]
+    capabilities: [chat, edit, apply, autocomplete, tool_use]
+    autocompleteOptions:
+      debounceDelay: 250
+      onlyMyCode: true
+
+  # --- Architect/Debugger Agent ---
+  - name: "Architect Agent (Llama 3.1)"
+    provider: ollama
+    apiBase: http://design:11434
+    model: llama3.1:latest
+    roles: [chat, edit, apply]
+
+  # --- Writer Agent ---
+  - name: "Writer Agent (Gemma 3)"
+    provider: ollama
+    apiBase: http://design:11434
+    model: gemma3:latest
+    roles: [chat]
+
+  # --- RAG Models ---
+  - name: "Nomic Embed"
+    provider: ollama
+    apiBase: http://design:11434
+    model: nomic-embed-text:latest
+    roles: [embed]
+
+  - name: "Qwen3 Reranker"
+    provider: ollama
+    apiBase: http://design:11434
+    model: dengcao/Qwen3-Reranker-8B:Q8_0
+    roles: [rerank]
+
+# --- Context Providers ---
+context:
+  - provider: codebase
+  - provider: file
+  - provider: open
+  - provider: problems
+  - provider: repo-map
+  - provider: terminal
+
+# --- MCP Servers ---
+# Localise this as it contains colleciton name.
+# mcpServers:
+#   - name: "qdrant-mcp"
+#     type: "stdio"
+#     command: "mcp-server-qdrant"
+#     args: []
+#     env:
+#       # Point this to your Design PC's Qdrant
+#       QDRANT_URL: "http://design:6333"
+#       COLLECTION_NAME: "email-sorter-code"
+
+# --- Rules ---
+# rules:
+#   - "Use British English (optimise, centre) and quote prices in GBP (£)."
+#   - "When providing code snippets, use triple backticks with the appropriate language identifier."
+#   - "When providing diagrams, format responses for Obsidian using Mermaid diagrams."

@@ -1,0 +1,78 @@
+FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
+
+# Prevent interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install system dependencies
+# libsm6, libxext6, and libxrender-dev are essential for OpenCV/Impact Pack
+RUN apt-get update && apt-get install -y \
+    git \
+    python3 \
+    python3-pip \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Clone ComfyUI
+RUN git clone --depth 1 --single-branch https://github.com/comfyanonymous/ComfyUI.git .
+
+# Install core Python requirements
+RUN pip3 install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# --- PRE-INSTALL NODE DEPENDENCIES ---
+# This fixes the 'skimage' and 'cv2' errors before the nodes load
+RUN pip3 install --no-cache-dir \
+    gguf \
+    opencv-python \
+    piexif \
+    scikit-image \
+    segment-anything-fast \
+    simpleeval \
+    ultralytics
+
+# --- CUSTOM NODES ---
+WORKDIR /app/custom_nodes
+
+# 1. GGUF Support (Required for Flux models)
+# 2. Meme Text Support (For writing "Happy Birthday Tom")
+# 3. Photo Touch-up & Face Fixing (Impact Pack)
+# 4. Efficiency Nodes (Simplifies workflows for paintings/drawings)
+# 5. Manager (To help you update or install more nodes easily)
+
+# 1. Clone repositories (Added Impact Subpack)
+RUN git clone --depth 1 --single-branch https://github.com/city96/ComfyUI-GGUF && \
+    git clone --depth 1 --single-branch https://github.com/pythongosssss/ComfyUI-Custom-Scripts && \
+    git clone --depth 1 --single-branch https://github.com/ltdrdata/ComfyUI-Impact-Pack && \
+    git clone --depth 1 --single-branch https://github.com/ltdrdata/ComfyUI-Impact-Subpack && \
+    git clone --depth 1 --single-branch https://github.com/jags111/efficiency-nodes-comfyui && \
+    git clone --depth 1 --single-branch https://github.com/ltdrdata/ComfyUI-Manager && \
+    git clone --depth 1 --single-branch https://github.com/AlekPet/ComfyUI_Custom_Nodes_AlekPet && \
+    git clone --depth 1 --single-branch https://github.com/WASasquatch/was-node-suite-comfyui
+
+# Clone these again in mapped volumes then run
+# sudo chown -R 1000:1000 ~/data/comfyui/models
+
+# 2. Explicitly install the Ultralytics engine for the detector node
+RUN pip3 install --no-cache-dir gguf Pillow fonttools onnxruntime-gpu scikit-image ultralytics
+
+# 3. Install dependencies for ALL cloned nodes
+RUN for dir in /app/custom_nodes/*/; do \
+        if [ -f "$dir/requirements.txt" ]; then \
+            pip install --no-cache-dir -r "$dir/requirements.txt"; \
+        fi; \
+    done
+
+WORKDIR /app
+
+# Expose port
+EXPOSE 8188
+
+# Launch ComfyUI
+CMD ["python3", "main.py", "--listen", "0.0.0.0"]
